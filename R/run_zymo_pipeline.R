@@ -27,31 +27,40 @@ run_zymo_pipeline <- function(input_dir,
   
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
   
-  fasta_files <- list.files(input_dir, pattern = "\\.(fasta|fna|txt)$", full.names = TRUE)
+  fasta_files <- list.files(input_dir, pattern = "\\.(fasta|fna|txt|fa)$", full.names = TRUE)
   
   if (length(fasta_files) == 0) stop("No sequence files found in input_dir.")
   
   all_mutation_results <- list()
   not_found_list <- c()
+  
+  global_amplicons_with <- list()
+  global_amplicons_no   <- list()
 
   cat("Starting ZymoR Pipeline on", length(fasta_files), "files...\n")
 
   for (f_path in fasta_files) {
     file_name <- basename(f_path)
-    cat("\n--- Processing:", file_name, "---\n")
+    cat("Processing:", file_name, "... ")
 
     amp_results <- analyze_genome(
       genome_path = f_path,
       forward_primers = forward_primers,
       reverse_primers = reverse_primers,
-      output_dir = file.path(output_dir, "amplicons"),
       ...
     )
     
     if (is.null(amp_results)) {
-      cat("! Warning: No amplicon found for", file_name, "\n")
+      cat("NOT FOUND\n")
       not_found_list <- c(not_found_list, file_name)
       next
+    }
+    
+    cat("FOUND\n")
+    
+    for(res in amp_results) {
+      global_amplicons_with[[res$amplicon_id]] <- res$with_p
+      global_amplicons_no[[res$amplicon_id]]   <- res$no_p
     }
     
     mut_matrix <- get_mutation_matrix(
@@ -65,6 +74,15 @@ run_zymo_pipeline <- function(input_dir,
     all_mutation_results[[file_name]] <- mut_matrix
   }
   
+  if(length(global_amplicons_with) > 0) {
+    all_with <- Biostrings::DNAStringSet(global_amplicons_with)
+    all_no   <- Biostrings::DNAStringSet(global_amplicons_no)
+    
+    Biostrings::writeXStringSet(all_with, file.path(output_dir, "ALL_amplicons_with_primers.fasta"))
+    Biostrings::writeXStringSet(all_no,   file.path(output_dir, "ALL_amplicons_without_primers.fasta"))
+    cat("\nCombined FASTA files saved.")
+  }
+
   if (length(all_mutation_results) > 0) {
     final_table <- do.call(rbind, all_mutation_results)
     rownames(final_table) <- NULL
