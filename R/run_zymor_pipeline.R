@@ -15,7 +15,7 @@
 #'
 #' @export
 
-run_zymo_pipeline <- function(input_dir, 
+run_zymor_pipeline <- function(input_dir, 
                               forward_primers, 
                               reverse_primers, 
                               reference_seq, 
