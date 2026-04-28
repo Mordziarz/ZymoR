@@ -104,3 +104,35 @@ get_mutation_matrix <- function(analyze_genome_results, reference_seq, target_po
   
   return(res_table)
 }
+
+#' Identify Haplotype Name from Detected Mutations
+#'
+#' Internal helper to match a vector of detected mutations against the database.
+#'
+#' @param detected_muts Named character vector of mutations found in the sample.
+#' @param haplotype_db List of known haplotypes.
+#' @return String. The name of the haplotype or "WildType (A0)" / "Unknown".
+#' @keywords internal
+
+identify_haplotype <- function(detected_muts, haplotype_db) {
+  
+  if (length(detected_muts) == 0) {
+    return("WildType (A0)")
+  }
+  
+  detected_muts <- detected_muts[order(names(detected_muts))]
+  
+  for (h_name in names(haplotype_db)) {
+    db_muts <- haplotype_db[[h_name]]
+    db_muts <- db_muts[order(names(db_muts))]
+    
+    if (length(detected_muts) == length(db_muts)) {
+      if (all(names(detected_muts) == names(db_muts)) && 
+          all(detected_muts == db_muts)) {
+        return(h_name)
+      }
+    }
+  }
+  
+  return("Unknown")
+}
