@@ -52,7 +52,7 @@ analyze_genome_results <- analyze_genome("path_to_your_fasta",
                                           max_mismatch = 1,
                                           output_dir = "contigs_results")
 
-analyze_genome_results$`1M3a` # If you want to view the sequences in R 
+analyze_genome_results$`your_fasta_name` # If you want to view the sequences in R 
 ```
 You can also:
 ```r
