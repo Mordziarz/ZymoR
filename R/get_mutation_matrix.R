@@ -37,8 +37,7 @@ get_mutation_matrix <- function(analyze_genome_results,
                                 reference_seq, 
                                 target_positions, 
                                 cds_ranges, 
-                                haplotype_db, 
-                                standard_promoter_len = 50) {
+                                haplotype_db) {
   
   get_neg_pos <- function(nt_idx, ranges) {
     all_pts <- c()
@@ -57,14 +56,10 @@ get_mutation_matrix <- function(analyze_genome_results,
     sub_aln <- as.character(pwalign::subject(aln))
     pat_aln <- as.character(pwalign::pattern(aln))
     ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
-    
     if(max(t_pos) > length(ref_idx)) return(list(aa="EMPTY"))
-    
     t_aln <- ref_idx[t_pos]
     raw_ex <- substr(pat_aln, min(t_aln), max(t_aln))
-    
     if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa="DEL"))
-    
     rc_codon <- as.character(Biostrings::reverseComplement(DNAString(raw_ex)))
     amino <- as.character(Biostrings::translate(DNAString(rc_codon)))
     return(list(aa = amino))
@@ -77,6 +72,8 @@ get_mutation_matrix <- function(analyze_genome_results,
   res_table <- data.frame(matrix(NA, nrow = length(analyze_genome_results), ncol = length(col_names)))
   colnames(res_table) <- col_names
   
+  is_cyp51 <- identical(target_positions, CYP51_target_positions)
+
   for (i in seq_along(analyze_genome_results)) {
     amp_data <- analyze_genome_results[[i]]
     curr_amp <- amp_data[["with_p"]]
@@ -85,25 +82,30 @@ get_mutation_matrix <- function(analyze_genome_results,
     res_table[i, "Sample_ID"] <- curr_id
     detected_muts <- list()
     
-    aln_for_indel <- pwalign::pairwiseAlignment(
-      pattern = DNAString(as.character(curr_amp)), 
-      subject = reference_seq, 
-      type = "global-local"
-    )
-    
-    start_in_amp <- Biostrings::start(pwalign::pattern(aln_for_indel))
-    
-    if (start_in_amp > (standard_promoter_len + 30)) {
-      res_table[i, indel_col] <- "YES"
-      detected_muts[[indel_col]] <- "INS"
+    if (is_cyp51) {
+      aln_for_indel <- pwalign::pairwiseAlignment(
+        pattern = DNAString(as.character(curr_amp)), 
+        subject = reference_seq, 
+        type = "global-local"
+      )
+      
+      end_in_amp <- Biostrings::end(pwalign::pattern(aln_for_indel))
+      amp_total_len <- nchar(as.character(curr_amp))
+      trailing_seq_len <- amp_total_len - end_in_amp
+      
+      if (trailing_seq_len > 30) {
+        res_table[i, indel_col] <- "YES"
+        detected_muts[[indel_col]] <- "INS"
+      } else {
+        res_table[i, indel_col] <- "NO"
+      }
     } else {
-      res_table[i, indel_col] <- "NO"
+      res_table[i, indel_col] <- "N/A"
     }
 
     for (m_name in mut_names) {
       aa_num <- target_positions[[m_name]]
-      nt_idx <- c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3))
-      dna_idx <- get_neg_pos(nt_idx, cds_ranges)
+      dna_idx <- get_neg_pos(c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3)), cds_ranges)
       
       mut_res <- check_mut(curr_amp, reference_seq, dna_idx)
       wild_aa <- substr(m_name, 1, 1)
@@ -117,7 +119,6 @@ get_mutation_matrix <- function(analyze_genome_results,
     }
     
     final_detected <- unlist(detected_muts)
-    
     h_name <- identify_haplotype(final_detected, haplotype_db)
     res_table[i, "Haplotype"] <- h_name
     
