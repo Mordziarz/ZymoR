@@ -33,7 +33,12 @@
 #' @export
 #'
 
-get_mutation_matrix <- function(analyze_genome_results, reference_seq, target_positions, cds_ranges, haplotype_db) {
+get_mutation_matrix <- function(analyze_genome_results, 
+                                reference_seq, 
+                                target_positions, 
+                                cds_ranges, 
+                                haplotype_db, 
+                                standard_promoter_len = 50) {
   
   get_neg_pos <- function(nt_idx, ranges) {
     all_pts <- c()
@@ -66,7 +71,8 @@ get_mutation_matrix <- function(analyze_genome_results, reference_seq, target_po
   }
   
   mut_names <- names(target_positions)
-  col_names <- c("Sample_ID", "Haplotype", "Status", mut_names)
+  indel_col <- "INDEL_Promoter"
+  col_names <- c("Sample_ID", "Haplotype", "Status", indel_col, mut_names)
   
   res_table <- data.frame(matrix(NA, nrow = length(analyze_genome_results), ncol = length(col_names)))
   colnames(res_table) <- col_names
@@ -77,8 +83,23 @@ get_mutation_matrix <- function(analyze_genome_results, reference_seq, target_po
     curr_id  <- as.character(amp_data[["amplicon_id"]])
     
     res_table[i, "Sample_ID"] <- curr_id
-    detected_muts <- c()
+    detected_muts <- list()
     
+    aln_for_indel <- pwalign::pairwiseAlignment(
+      pattern = DNAString(as.character(curr_amp)), 
+      subject = reference_seq, 
+      type = "global-local"
+    )
+    
+    start_in_amp <- Biostrings::start(pwalign::pattern(aln_for_indel))
+    
+    if (start_in_amp > (standard_promoter_len + 30)) {
+      res_table[i, indel_col] <- "YES"
+      detected_muts[[indel_col]] <- "INS"
+    } else {
+      res_table[i, indel_col] <- "NO"
+    }
+
     for (m_name in mut_names) {
       aa_num <- target_positions[[m_name]]
       nt_idx <- c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3))
@@ -89,13 +110,15 @@ get_mutation_matrix <- function(analyze_genome_results, reference_seq, target_po
       
       if (mut_res$aa != wild_aa && mut_res$aa != "EMPTY") {
         res_table[i, m_name] <- mut_res$aa
-        detected_muts[m_name] <- mut_res$aa
+        detected_muts[[m_name]] <- mut_res$aa
       } else {
         res_table[i, m_name] <- "wt"
       }
     }
     
-    h_name <- identify_haplotype(detected_muts, haplotype_db)
+    final_detected <- unlist(detected_muts)
+    
+    h_name <- identify_haplotype(final_detected, haplotype_db)
     res_table[i, "Haplotype"] <- h_name
     
     is_known <- h_name %in% names(haplotype_db) || h_name == "WildType (A0)"
