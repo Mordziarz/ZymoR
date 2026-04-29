@@ -71,7 +71,7 @@ check_mut <- function(amp, ref, t_pos) {
 
   amino <- as.character(Biostrings::translate(
     codon_dna, 
-    genetic.code = Biostrings::getGeneticCode("1"), 
+    genetic.code = Biostrings::getGeneticCode("2"), 
     if.fuzzy.codon = "solve"
   ))
   
