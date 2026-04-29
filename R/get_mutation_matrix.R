@@ -56,7 +56,6 @@ check_mut <- function(amp, ref, t_pos) {
   
   sub_aln <- as.character(pwalign::subject(aln))
   pat_aln <- as.character(pwalign::pattern(aln))
-  
   ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
   
   if(max(t_pos) > length(ref_idx)) return(list(aa="EMPTY"))
@@ -67,11 +66,12 @@ check_mut <- function(amp, ref, t_pos) {
   
   if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa="DEL"))
   
+  
   codon_dna <- Biostrings::complement(DNAString(raw_ex))
 
   amino <- as.character(Biostrings::translate(
     codon_dna, 
-    genetic.code = Biostrings::getGeneticCode("2"), 
+    genetic.code = Biostrings::getGeneticCode("1"), 
     if.fuzzy.codon = "solve"
   ))
   
