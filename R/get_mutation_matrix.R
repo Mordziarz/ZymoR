@@ -47,23 +47,36 @@ get_mutation_matrix <- function(analyze_genome_results,
     return(all_pts[nt_idx])
   }
   
-  check_mut <- function(amp, ref, t_pos) {
-    aln <- pwalign::pairwiseAlignment(
-      pattern = DNAString(as.character(amp)), 
-      subject = DNAString(as.character(ref)), 
-      type = "global-local"
-    )
-    sub_aln <- as.character(pwalign::subject(aln))
-    pat_aln <- as.character(pwalign::pattern(aln))
-    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
-    if(max(t_pos) > length(ref_idx)) return(list(aa="EMPTY"))
-    t_aln <- ref_idx[t_pos]
-    raw_ex <- substr(pat_aln, min(t_aln), max(t_aln))
-    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa="DEL"))
-    rc_codon <- as.character(Biostrings::reverseComplement(DNAString(raw_ex)))
-    amino <- as.character(Biostrings::translate(DNAString(rc_codon)))
-    return(list(aa = amino))
-  }
+check_mut <- function(amp, ref, t_pos) {
+  aln <- pwalign::pairwiseAlignment(
+    pattern = DNAString(as.character(amp)), 
+    subject = DNAString(as.character(ref)), 
+    type = "global-local"
+  )
+  
+  sub_aln <- as.character(pwalign::subject(aln))
+  pat_aln <- as.character(pwalign::pattern(aln))
+  
+  ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
+  
+  if(max(t_pos) > length(ref_idx)) return(list(aa="EMPTY"))
+  
+  t_aln <- ref_idx[t_pos]
+  pat_vec <- strsplit(pat_aln, "")[[1]]
+  raw_ex <- paste0(pat_vec[t_aln], collapse = "")
+  
+  if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa="DEL"))
+  
+  codon_dna <- Biostrings::complement(DNAString(raw_ex))
+
+  amino <- as.character(Biostrings::translate(
+    codon_dna, 
+    genetic.code = Biostrings::getGeneticCode("1"), 
+    if.fuzzy.codon = "solve"
+  ))
+  
+  return(list(aa = amino))
+}
   
   mut_names <- names(target_positions)
   indel_col <- "INDEL_Promoter"
