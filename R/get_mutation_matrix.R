@@ -88,14 +88,12 @@ get_mutation_matrix <- function(analyze_genome_results,
         subject = reference_seq, 
         type = "global-local"
       )
-      
       end_in_amp <- Biostrings::end(pwalign::pattern(aln_for_indel))
       amp_total_len <- nchar(as.character(curr_amp))
       trailing_seq_len <- amp_total_len - end_in_amp
       
-      if (trailing_seq_len > 150) {
+      if (trailing_seq_len > 30) {
         res_table[i, indel_col] <- "YES"
-        detected_muts[[indel_col]] <- "INS"
       } else {
         res_table[i, indel_col] <- "NO"
       }
@@ -119,6 +117,7 @@ get_mutation_matrix <- function(analyze_genome_results,
     }
     
     final_detected <- unlist(detected_muts)
+    
     h_name <- identify_haplotype(final_detected, haplotype_db)
     res_table[i, "Haplotype"] <- h_name
     
