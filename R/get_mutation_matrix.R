@@ -92,7 +92,7 @@ get_mutation_matrix <- function(analyze_genome_results,
       amp_total_len <- nchar(as.character(curr_amp))
       trailing_seq_len <- amp_total_len - end_in_amp
       
-      if (trailing_seq_len > 30) {
+      if (trailing_seq_len > 150) {
         res_table[i, indel_col] <- "YES"
       } else {
         res_table[i, indel_col] <- "NO"
