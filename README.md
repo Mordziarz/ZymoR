@@ -100,7 +100,7 @@ run_zymor_pipeline_results <- run_zymor_pipeline("/dane/Septorie/",
                                                  max_mismatch = 1,
                                                  output_dir = "zymo_test",
                                                  reference_seq = CYP51_reference,
-                                                 target_positions = target_positions_CYP51,
+                                                 target_positions = CYP51_target_positions,
                                                  cds_ranges = CYP51_CDS,
                                                  haplotype_db = CYP51_db)
 
