@@ -39,29 +39,50 @@ get_mutation_matrix <- function(analyze_genome_results,
                                 cds_ranges, 
                                 haplotype_db) {
   
-  get_neg_pos <- function(nt_idx, ranges) {
+  is_negative_strand <- all(Biostrings::start(cds_ranges) > Biostrings::end(cds_ranges)) || 
+                        (Biostrings::start(cds_ranges)[1] > Biostrings::end(cds_ranges)[1])
+
+  get_genomic_indices <- function(aa_num, ranges, is_neg) {
+    nt_idx <- c((aa_num * 3) - 2, (aa_num * 3) - 1, (aa_num * 3))
     all_pts <- c()
     for(i in seq_along(ranges)) {
-      all_pts <- c(all_pts, seq(end(ranges[i]), start(ranges[i])))
+      if(is_neg) {
+        all_pts <- c(all_pts, seq(Biostrings::start(ranges[i]), Biostrings::end(ranges[i])))
+      } else {
+        all_pts <- c(all_pts, seq(Biostrings::start(ranges[i]), Biostrings::end(ranges[i])))
+      }
     }
     return(all_pts[nt_idx])
   }
   
-  check_mut <- function(amp, ref, t_pos) {
+  check_mut <- function(amp, ref, aa_pos, ranges, is_neg) {
     aln <- pwalign::pairwiseAlignment(
       pattern = DNAString(as.character(amp)), 
       subject = DNAString(as.character(ref)), 
       type = "global-local"
     )
-    sub_aln <- as.character(pwalign::subject(aln))
+    
     pat_aln <- as.character(pwalign::pattern(aln))
+    sub_aln <- as.character(pwalign::subject(aln))
+    
     ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
-    if(max(t_pos) > length(ref_idx)) return(list(aa="EMPTY"))
-    t_aln <- ref_idx[t_pos]
-    raw_ex <- substr(pat_aln, min(t_aln), max(t_aln))
-    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa="DEL"))
-    rc_codon <- as.character(Biostrings::reverseComplement(DNAString(raw_ex)))
-    amino <- as.character(Biostrings::translate(DNAString(rc_codon)))
+    
+    cds_nt_positions <- c((aa_pos * 3) - 2, (aa_pos * 3) - 1, (aa_pos * 3))
+    
+    if(max(cds_nt_positions) > length(ref_idx)) return(list(aa="EMPTY"))
+    
+    pos_in_aln <- ref_idx[cds_nt_positions]
+    raw_codon <- substr(pat_aln, min(pos_in_aln), max(pos_in_aln))
+    
+    if(nchar(raw_codon) < 3 || grepl("-", raw_codon)) return(list(aa="DEL"))
+    
+    if(is_neg) {
+      codon_to_translate <- as.character(Biostrings::reverseComplement(DNAString(raw_codon)))
+    } else {
+      codon_to_translate <- raw_codon
+    }
+    
+    amino <- as.character(Biostrings::translate(DNAString(codon_to_translate), no.init.codon = TRUE))
     return(list(aa = amino))
   }
   
@@ -72,7 +93,7 @@ get_mutation_matrix <- function(analyze_genome_results,
   res_table <- data.frame(matrix(NA, nrow = length(analyze_genome_results), ncol = length(col_names)))
   colnames(res_table) <- col_names
   
-  is_cyp51 <- identical(target_positions, CYP51_target_positions)
+  is_cyp51 <- exists("CYP51_target_positions") && identical(target_positions, CYP51_target_positions)
 
   for (i in seq_along(analyze_genome_results)) {
     amp_data <- analyze_genome_results[[i]]
@@ -89,23 +110,18 @@ get_mutation_matrix <- function(analyze_genome_results,
         type = "global-local"
       )
       end_in_amp <- Biostrings::end(pwalign::pattern(aln_for_indel))
-      amp_total_len <- nchar(as.character(curr_amp))
-      trailing_seq_len <- amp_total_len - end_in_amp
+      trailing_len <- nchar(as.character(curr_amp)) - end_in_amp
       
-      if (trailing_seq_len > 150) {
-        res_table[i, indel_col] <- "YES"
-      } else {
-        res_table[i, indel_col] <- "NO"
-      }
+      res_table[i, indel_col] <- if(trailing_len > 100) "YES" else "NO"
     } else {
       res_table[i, indel_col] <- "N/A"
     }
 
     for (m_name in mut_names) {
       aa_num <- target_positions[[m_name]]
-      dna_idx <- get_neg_pos(c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3)), cds_ranges)
       
-      mut_res <- check_mut(curr_amp, reference_seq, dna_idx)
+      mut_res <- check_mut(curr_amp, reference_seq, aa_num, cds_ranges, is_negative_strand)
+      
       wild_aa <- substr(m_name, 1, 1)
       
       if (mut_res$aa != wild_aa && mut_res$aa != "EMPTY") {
@@ -117,7 +133,6 @@ get_mutation_matrix <- function(analyze_genome_results,
     }
     
     final_detected <- unlist(detected_muts)
-    
     h_name <- identify_haplotype(final_detected, haplotype_db)
     res_table[i, "Haplotype"] <- h_name
     
