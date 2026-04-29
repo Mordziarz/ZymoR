@@ -84,9 +84,9 @@ print(get_mutation_matrix_results)
 ```
 
 
-| Sample_ID | Haplotype | Status | L50 | D107 | D134 | V136 | Y137 | N178 | S188 | S208 | S259 | N284 | H303 | A311 | G312 | A379 | I381 | A410 | G412 | Y459 | G460 | Y461 | G476 | V490 | G510 | N513 | S524 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1WIDPa** | E5 | KNOWN | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
+| Sample_ID | Haplotype | Status | INDEL_Promoter | L50 | D107 | D134 | V136 | Y137 | N178 | S188 | S208 | S259 | N284 | H303 | A311 | G312 | A379 | I381 | A410 | G412 | Y459 | G460 | Y461 | G476 | V490 | G510 | N513 | S524 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1WIDPa** | E5 | KNOWN | YES | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
 
 # Batch analysis of multiple FASTA files
 
@@ -108,19 +108,25 @@ run_zymor_pipeline_results <- run_zymor_pipeline("/dane/Septorie/",
 print(run_zymor_pipeline_results)
 ```
 
-| Sample_ID | Haplotype | Status | L50 | D107 | D134 | V136 | Y137 | N178 | S188 | S208 | S259 | N284 | H303 | A311 | G312 | A379 | I381 | A410 | G412 | Y459 | G460 | Y461 | G476 | V490 | G510 | N513 | S524 |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1M3a** | Unknown | **NEW** | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | K | wt |
-| **1WIDPa** | E5 | **KNOWN** | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
-| **1WIDPe** | Unknown | **NEW** | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | wt | T |
-| **2m** | Unknown | **NEW** | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | wt | T |
-| **3mb** | Unknown | **NEW** | S | wt | G | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | wt | T |
-| **DP152** | Unknown | **NEW** | M | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | wt | wt | S | wt | wt | wt | wt | T |
-| **IPO323** | Unknown | **NEW** | M | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt |
-| **IRE30** | C6 | **KNOWN** | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | S | wt | wt | wt | wt | wt |
-| **NT321** | Unknown | **NEW** | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | K | T |
-| **pgp** | Unknown | **NEW** | M | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
-| **scaffolds**| Unknown | **NEW** | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | K | wt |
-| **Z1WIDPd** | Unknown | **NEW** | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | K | wt |
-| **Z25B36** | Unknown | **NEW** | M | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
-| **Z7Ma** | Unknown | **NEW** | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | DEL | wt | wt | wt | K | wt |
+| Sample_ID | Haplotype | Status | INDEL_Promoter | L50 | D107 | D134 | V136 | Y137 | N178 | S188 | S208 | S259 | N284 | H303 | A311 | G312 | A379 | I381 | A410 | G412 | Y459 | G460 | Y461 | G476 | V490 | G510 | N513 | S524 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1M3a** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+| **1WIDPa** | E5 | KNOWN | YES | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
+| **1WIDPe** | Unknown | NEW | YES | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | wt | T |
+| **25B16** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | T | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+| **25B17** | Unknown | NEW | YES | S | wt | G | A | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | T |
+| **25B19** | Unknown | NEW | YES | M | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
+| **25B25** | Unknown | NEW | YES | S | wt | G | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | T |
+| **25B30** | Unknown | NEW | YES | S | wt | G | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | wt | T |
+| **25B33** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | H | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+| **2m** | Unknown | NEW | YES | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | wt | T |
+| **3mb** | Unknown | NEW | YES | S | wt | G | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | wt | T |
+| **DP152** | Unknown | NEW | YES | M | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | wt | wt | S | wt | wt | wt | wt | T |
+| **IPO323** | Unknown | NEW | YES | M | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt |
+| **IRE30** | C6 | KNOWN | YES | S | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | S | wt | wt | wt | wt | wt |
+| **NT321** | Unknown | NEW | YES | S | wt | wt | C | wt | wt | N | wt | wt | wt | wt | wt | wt | G | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | T |
+| **pgp** | Unknown | NEW | YES | M | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
+| **scaffolds** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+| **Z1WIDPd** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+| **Z25B36** | Unknown | NEW | YES | M | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
+| **Z7Ma** | Unknown | NEW | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
