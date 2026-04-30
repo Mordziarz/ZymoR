@@ -152,15 +152,16 @@ check_mut <- function(amp, ref, t_pos) {
 #' @keywords internal
 
 identify_haplotype <- function(detected_muts, haplotype_db) {
-  
+
   if (length(detected_muts) == 0) {
     return("WildType (A0)")
   }
   
+  detected_muts <- toupper(detected_muts)
   detected_muts <- detected_muts[order(names(detected_muts))]
   
   for (h_name in names(haplotype_db)) {
-    db_muts <- haplotype_db[[h_name]]
+    db_muts <- toupper(haplotype_db[[h_name]])
     db_muts <- db_muts[order(names(db_muts))]
     
     if (length(detected_muts) == length(db_muts)) {
