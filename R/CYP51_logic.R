@@ -138,7 +138,6 @@ get_CYP51 <- function(input_path, output_dir = "zymor_results", ...) {
       genome_path = f_path,
       forward_primers = c(CYP51_F),
       reverse_primers = c(CYP51_R),
-      output_dir = sample_folder,
       ...
     )
 
