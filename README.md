@@ -80,17 +80,17 @@ print(get_CYTB_res)
 
 | Sample_ID | F129L | Y132C | G143A |
 |:---|:---|:---|:---|
-| `1M3a` | wt | wt | A |
-| `1WIDPa` | wt | wt | A |
-| `1WIDPe` | wt | wt | A |
-| `25B16` | wt | wt | A |
-| `25B25` | wt | wt | A |
-| `25B33` | wt | wt | A |
-| `2m` | wt | wt | A |
-| `3mb` | wt | wt | A |
-| `DP152` | wt | wt | A |
-| `IPO323` | wt | wt | wt |
-| `IRE30` | L | wt | wt |
-| `NT321` | wt | wt | A |
-| `pgp` | wt | wt | A |
-| `scaffolds` | wt | wt | A |
+| 1M3a | wt | wt | A |
+| 1WIDPa | wt | wt | A |
+| 1WIDPe | wt | wt | A |
+| 25B16 | wt | wt | A |
+| 25B25 | wt | wt | A |
+| 25B33 | wt | wt | A |
+| 2m | wt | wt | A |
+| 3mb | wt | wt | A |
+| DP152 | wt | wt | A |
+| IPO323 | wt | wt | wt |
+| IRE30 | L | wt | wt |
+| NT321 | wt | wt | A |
+| pgp | wt | wt | A |
+| scaffolds | wt | wt | A |
