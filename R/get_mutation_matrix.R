@@ -38,8 +38,6 @@ get_mutation_matrix <- function(analyze_genome_results,
                                 target_positions, 
                                 cds_ranges, 
                                 haplotype_db) {
-  
-  reference_seq <- Biostrings::DNAString(as.character(reference_seq))
 
   get_neg_pos <- function(nt_idx, ranges) {
     all_pts <- c()
