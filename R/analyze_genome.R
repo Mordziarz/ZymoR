@@ -10,7 +10,6 @@
 #' @param max_mismatch Integer. Maximum allowed mismatches for primer binding (default is 1).
 #' @param max_amplicon_length Integer. Maximum allowed length of the amplicons (default is 5000 bp).
 #' @param min_amplicon_length Integer. Minimum allowed length of the amplicons (default is 100 bp).
-#' @param output_dir String. Directory where the resulting FASTA files will be saved.
 #' @param all Logical. If FALSE (default), the function stops after finding an amplicon in the first matching contig.
 #' @param min_contig_length Integer. Minimum contig length to be considered for analysis.
 #'
@@ -24,14 +23,11 @@ analyze_genome <- function(genome_path,
                            max_mismatch = 1,
                            max_amplicon_length = 5000,
                            min_amplicon_length = 100,
-                           output_dir = "contigs_results",
                            all = FALSE,
                            min_contig_length = 1000) {
   
   cat("=== GENOME ANALYSIS ===\n")
   genome_seqs <- readDNAStringSet(genome_path)
-  
-  if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
   
   raw_results <- list()
   file_label <- tools::file_path_sans_ext(basename(genome_path))
@@ -75,7 +71,6 @@ analyze_genome <- function(genome_path,
     final_list[[i]]$amplicon_id <- new_names[i]
   }
   
-  save_final_results(final_list, output_dir)
   return(final_list)
 }
 
@@ -148,29 +143,4 @@ analyze_single_contig <- function(sequence, contig_name,
   find_pairs(hits$f_dir, hits$r_dir, FALSE)
   
   return(amplicons)
-}
-
-#' Export Results to FASTA Files
-#'
-#' Saves identified amplicon sequences into two separate FASTA files:
-#' one with primer sequences included and one with only the internal sequence.
-#'
-#' @param final_list The resulting list from the \code{analyze_genome} function.
-#' @param output_dir String. The output directory.
-#'
-#' @return No return value; writes files to disk.
-#' @export
-
-save_final_results <- function(final_list, output_dir) {
-  headers <- names(final_list)
-  seqs_with <- DNAStringSet(lapply(final_list, function(x) x$with_p))
-  seqs_without <- DNAStringSet(lapply(final_list, function(x) x$no_p))
-  
-  names(seqs_with) <- headers
-  names(seqs_without) <- headers
-  
-  writeXStringSet(seqs_with, file.path(output_dir, "amplicons_with_primers.fasta"))
-  writeXStringSet(seqs_without, file.path(output_dir, "amplicons_without_primers.fasta"))
-  
-  cat("Analysis complete. Results saved in:", output_dir, "\n")
 }
