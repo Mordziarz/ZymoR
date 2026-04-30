@@ -67,3 +67,30 @@ print(get_CYP51_res)
 | Z1WIDPd | F2 | KNOWN | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
 | Z25B36 | D13 | KNOWN | NO | wt | wt | wt | C | wt | wt | wt | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | wt | wt | H | wt | wt | wt | wt | T |
 | Z7Ma | F2 | KNOWN | YES | S | wt | wt | wt | wt | wt | N | wt | wt | wt | wt | wt | wt | wt | V | wt | wt | DEL | DEL | wt | wt | wt | wt | K | wt |
+
+
+# CYTB
+
+```r
+get_CYTB_res <- ZymoR::get_CYTB(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
+
+
+print(get_CYTB_res)
+```
+
+| Sample_ID | F129L | Y132C | G143A |
+|:---|:---|:---|:---|
+| `1M3a` | wt | wt | A |
+| `1WIDPa` | wt | wt | A |
+| `1WIDPe` | wt | wt | A |
+| `25B16` | wt | wt | A |
+| `25B25` | wt | wt | A |
+| `25B33` | wt | wt | A |
+| `2m` | wt | wt | A |
+| `3mb` | wt | wt | A |
+| `DP152` | wt | wt | A |
+| `IPO323` | wt | wt | wt |
+| `IRE30` | L | wt | wt |
+| `NT321` | wt | wt | A |
+| `pgp` | wt | wt | A |
+| `scaffolds` | wt | wt | A |
