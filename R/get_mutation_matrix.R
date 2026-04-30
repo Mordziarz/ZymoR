@@ -153,19 +153,14 @@ check_mut <- function(amp, ref, t_pos) {
 
 identify_haplotype <- function(detected_muts, haplotype_db) {
   
-  detected_muts <- detected_muts[detected_muts != "wt" & !is.na(detected_muts)]
-  
   if (length(detected_muts) == 0) {
     return("WildType (A0)")
   }
   
-  detected_muts <- toupper(detected_muts)
   detected_muts <- detected_muts[order(names(detected_muts))]
   
   for (h_name in names(haplotype_db)) {
     db_muts <- haplotype_db[[h_name]]
-    
-    db_muts <- toupper(db_muts)
     db_muts <- db_muts[order(names(db_muts))]
     
     if (length(detected_muts) == length(db_muts)) {
