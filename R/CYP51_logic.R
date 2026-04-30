@@ -237,9 +237,21 @@ CYP51_target_positions <- c(
     
     cat("[FOUND]\n")
     
-    for(res in amp_results) {
-      # Zapisujemy każdy amplikon, dodając przedrostek z nazwą pliku/próbki, aby nie nadpisywać kluczy
-      sample_amp_id <- paste0(file_label, "_", res$amplicon_id)
+  if (length(amp_results) > 1) {
+      for (i in seq_along(amp_results)) {
+        res <- amp_results[[i]]
+        sample_amp_id <- paste0(file_label, "_", i)
+        
+        if (!is.null(res$with_p)) {
+          global_amplicons_with[[sample_amp_id]] <- res$with_p
+        }
+        if (!is.null(res$no_p)) {
+          global_amplicons_no[[sample_amp_id]] <- res$no_p
+        }
+      }
+    } else {
+      res <- amp_results[[1]]
+      sample_amp_id <- file_label
       
       if (!is.null(res$with_p)) {
         global_amplicons_with[[sample_amp_id]] <- res$with_p
@@ -264,7 +276,6 @@ CYP51_target_positions <- c(
   
   if(length(global_amplicons_with) > 0) {
     seq_list_with <- Biostrings::DNAStringSet(global_amplicons_with)
-    # Zapisujemy do folderu głównego (bez podfolderu)
     Biostrings::writeXStringSet(seq_list_with, file.path(output_dir, "CYP51_with_primers.fasta"))
     cat("- Saved: CYP51_with_primers.fasta\n")
   }
