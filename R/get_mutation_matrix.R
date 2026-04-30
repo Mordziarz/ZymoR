@@ -39,6 +39,8 @@ get_mutation_matrix <- function(analyze_genome_results,
                                 cds_ranges, 
                                 haplotype_db) {
   
+  ref_obj <- Biostrings::DNAString(as.character(reference_seq))
+
   get_neg_pos <- function(nt_idx, ranges) {
     all_pts <- c()
     for(i in seq_along(ranges)) {
@@ -152,24 +154,24 @@ check_mut <- function(amp, ref, t_pos) {
 #' @keywords internal
 
 identify_haplotype <- function(detected_muts, haplotype_db) {
+  detected_muts <- detected_muts[detected_muts != "wt" & !is.na(detected_muts)]
   
-  if (length(detected_muts) == 0) {
-    return("WildType (A0)")
-  }
+  if (length(detected_muts) == 0) return("WildType (A0)")
   
-  detected_muts <- detected_muts[order(names(detected_muts))]
+  det_names <- names(detected_muts)
+  det_vals  <- toupper(as.character(detected_muts))
   
   for (h_name in names(haplotype_db)) {
     db_muts <- haplotype_db[[h_name]]
-    db_muts <- db_muts[order(names(db_muts))]
+    if (length(det_vals) != length(db_muts)) next
     
-    if (length(detected_muts) == length(db_muts)) {
-      if (all(names(detected_muts) == names(db_muts)) && 
-          all(detected_muts == db_muts)) {
-        return(h_name)
-      }
+    db_names <- names(db_muts)
+    db_vals  <- toupper(as.character(db_muts))
+    
+    if (all(det_names[order(det_names)] == db_names[order(db_names)]) &&
+        all(det_vals[order(det_names)] == db_vals[order(db_names)])) {
+      return(h_name)
     }
   }
-  
   return("Unknown")
 }
