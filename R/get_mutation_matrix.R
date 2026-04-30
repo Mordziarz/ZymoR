@@ -33,7 +33,7 @@
 #' @export
 #'
 
-get_mutation_matrix <- function(analyze_genome_results, 
+get_CYP51 <- function(analyze_genome_results, 
                                 reference_seq, 
                                 target_positions, 
                                 cds_ranges, 
