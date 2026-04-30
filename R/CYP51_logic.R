@@ -209,9 +209,6 @@ get_CYP51 <- function(input_path, output_dir = "zymor_results", ...) {
   for (f_path in fasta_files) {
     file_label <- tools::file_path_sans_ext(basename(f_path))
     
-    sample_folder <- file.path(output_dir, file_label)
-    if (!dir.exists(sample_folder)) dir.create(sample_folder, recursive = TRUE)
-    
     cat("Processing:", file_label, "... ")
     
     amp_results <- analyze_genome(
@@ -224,15 +221,21 @@ get_CYP51 <- function(input_path, output_dir = "zymor_results", ...) {
     if (is.null(amp_results)) {
       cat("[NOT FOUND]\n")
       not_found_list <- c(not_found_list, file_label)
-      unlink(sample_folder, recursive = TRUE)
       next
     }
     
     cat("[FOUND]\n")
     
     for(res in amp_results) {
-      global_amplicons_with[[res$amplicon_id]] <- res$with_p
-      global_amplicons_no[[res$amplicon_id]]   <- res$no_p
+      # Zapisujemy każdy amplikon, dodając przedrostek z nazwą pliku/próbki, aby nie nadpisywać kluczy
+      sample_amp_id <- paste0(file_label, "_", res$amplicon_id)
+      
+      if (!is.null(res$with_p)) {
+        global_amplicons_with[[sample_amp_id]] <- res$with_p
+      }
+      if (!is.null(res$no_p)) {
+        global_amplicons_no[[sample_amp_id]] <- res$no_p
+      }
     }
     
     mut_matrix <- .internal_cyp_processing(
@@ -243,21 +246,21 @@ get_CYP51 <- function(input_path, output_dir = "zymor_results", ...) {
       CYP51_db = CYP51_db
     )
     
-    write.csv(mut_matrix, file.path(sample_folder, paste0(file_label, "_mutations.csv")), row.names = FALSE)
     all_mutation_results[[file_label]] <- mut_matrix
   }
   
   cat("\n--- Finalizing Global Results ---\n")
   
   if(length(global_amplicons_with) > 0) {
-    all_with <- Biostrings::DNAStringSet(global_amplicons_with)
-    Biostrings::writeXStringSet(all_with, file.path(output_dir, "CYP51_with_primers.fasta"))
+    seq_list_with <- Biostrings::DNAStringSet(global_amplicons_with)
+    # Zapisujemy do folderu głównego (bez podfolderu)
+    Biostrings::writeXStringSet(seq_list_with, file.path(output_dir, "CYP51_with_primers.fasta"))
     cat("- Saved: CYP51_with_primers.fasta\n")
   }
   
   if(length(global_amplicons_no) > 0) {
-    all_no <- Biostrings::DNAStringSet(global_amplicons_no)
-    Biostrings::writeXStringSet(all_no, file.path(output_dir, "CYP51_without_primers.fasta"))
+    seq_list_no <- Biostrings::DNAStringSet(global_amplicons_no)
+    Biostrings::writeXStringSet(seq_list_no, file.path(output_dir, "CYP51_without_primers.fasta"))
     cat("- Saved: CYP51_without_primers.fasta\n")
   }
   
