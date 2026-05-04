@@ -163,14 +163,12 @@ F129L=129,Y132C=132,G143A=143
     
     aln <- pwalign::pairwiseAlignment(
       pattern = DNAString(as.character(amp)), 
-      subject = DNAString(as.character(ref)), 
+      subject = ref, 
       type = "global-local"
     )
     
     sub_aln <- as.character(pwalign::subject(aln))
     pat_aln <- as.character(pwalign::pattern(aln))
-    
-    ref_match_start <- attr(aln, "start")[2]
     ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
     
     mapped_pos <- match(t_pos, ref_idx)
