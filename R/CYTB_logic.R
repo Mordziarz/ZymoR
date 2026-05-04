@@ -175,7 +175,7 @@ F129L=20,Y132C=23,G143A=34
     pat_vec <- strsplit(pat_aln, "")[[1]] 
     raw_ex <- paste0(pat_vec[t_aln], collapse = "") 
     
-    if(nchar(raw_ex) < 3 || grepl grepl("-", raw_ex)) return(list(aa = "DEL")) 
+    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL")) 
     
     codon_dna <- Biostrings::complement(DNAString(raw_ex)) 
     
