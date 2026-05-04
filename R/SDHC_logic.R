@@ -22,8 +22,8 @@ SDHC_reference <- Biostrings::DNAString("CCATCTCTCTTCATCCTCCTCCCTCATCTCCTCCCTCAT
 
 
 SDHC_CDS <- IRanges::IRanges(
-  start = c(286, 144, 35),
-  end   = c(724, 225, 74),
+  start = c(291, 147, 35),
+  end   = c(729, 228, 74),
   names = c("CDS1", "CDS2", "CDS3")
 )
 
