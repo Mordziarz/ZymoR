@@ -69,10 +69,10 @@ F129L=129,Y132C=132,G143A=143
       genome_path = f_path,
       forward_primers = c(SDHD_F),
       reverse_primers = c(SDHD_R),
-      min_contig_length = 1000,
+      min_contig_length = 500,
       max_mismatch = 1,
-      max_amplicon_length = 2000,
-      min_amplicon_length = 1000,
+      max_amplicon_length = 1000,
+      min_amplicon_length = 500,
       ...
     )
     
