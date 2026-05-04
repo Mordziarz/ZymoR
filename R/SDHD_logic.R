@@ -28,8 +28,7 @@ SDHD_CDS <- IRanges::IRanges(
 
   
 SDHD_target_positions <- c(
-F129L=129,Y132C=132,G143A=143
-)
+R47W=47,I50L=50)
 
   
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
