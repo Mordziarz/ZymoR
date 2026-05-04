@@ -161,31 +161,32 @@ F129L=129,Y132C=132,G143A=143
   check_mut <- function(amp, ref, t_pos) {
     if (length(amp) == 0) return(list(aa = "EMPTY"))
     
-    aln <- pwalign::pairwiseAlignment(
-      pattern = Biostrings::DNAString(as.character(amp)),
-      subject = ref,
-      type = "global-local"
+    amp_dna <- Biostrings::DNAString(as.character(amp))
+    
+    start_match <- Biostrings::matchPattern(
+      pattern = Biostrings::subseq(amp_dna, 1, 20),
+      subject = ref
     )
     
-    sub_aln <- as.character(pwalign::subject(aln))
-    pat_aln <- as.character(pwalign::pattern(aln))
-    
-    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
-    
-    mapped_pos <- match(t_pos, ref_idx)
-    
-    if (any(is.na(mapped_pos)) || max(mapped_pos) > nchar(pat_aln)) {
+    if (length(start_match) == 0) {
       return(list(aa = "EMPTY"))
     }
     
-    pat_vec <- strsplit(pat_aln, "")[[1]]
-    raw_ex <- paste0(pat_vec[mapped_pos], collapse = "")
+    offset <- start(start_match)[1] - 1
     
-    if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) {
-      return(list(aa = "DEL"))
+    amp_pos <- t_pos - offset
+    
+    if (min(amp_pos) < 1 || max(amp_pos) > length(amp_dna)) {
+      return(list(aa = "EMPTY"))
     }
     
-    codon_dna <- Biostrings::complement(Biostrings::DNAString(raw_ex))
+    codon_nt <- as.character(Biostrings::subseq(amp_dna, start = min(amp_pos), width = 3))
+    
+    if (nchar(codon_nt) < 3) {
+      return(list(aa = "DEL"))
+    }
+
+    codon_dna <- Biostrings::complement(Biostrings::DNAString(codon_nt))
     
     amino <- as.character(Biostrings::translate(
       codon_dna, 
