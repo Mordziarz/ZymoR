@@ -103,3 +103,12 @@ get_SDHD_res <- ZymoR::get_SDHD(input_path="path_to_your_folder_or_fasta",output
 
 print(get_SDHD_res)
 ```
+
+# SDHC
+
+```r
+get_SDHC_res <- ZymoR::get_SDHC(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
+
+
+print(get_SDHC_res)
+```
