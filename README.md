@@ -94,3 +94,12 @@ print(get_CYTB_res)
 | NT321 | wt | wt | A |
 | pgp | wt | wt | A |
 | scaffolds | wt | wt | A |
+
+# SDHD
+
+```r
+get_SDHD_res <- ZymoR::get_SDHD(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
+
+
+print(get_SDHD_res)
+```
