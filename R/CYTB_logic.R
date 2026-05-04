@@ -161,17 +161,19 @@ F129L=129,Y132C=132,G143A=143
   check_mut <- function(amp, ref, t_pos) {
     if (length(amp) == 0) return(list(aa = "EMPTY"))
     
-    if (max(t_pos) > nchar(amp)) {
+    amp_dna <- Biostrings::DNAString(as.character(amp))
+    
+    if (max(t_pos) > length(amp_dna)) {
       return(list(aa = "EMPTY"))
     }
     
-    raw_ex <- as.character(subseq(amp, start = min(t_pos), width = 3))
+    raw_ex <- as.character(Biostrings::subseq(amp_dna, start = min(t_pos), width = 3))
     
     if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) {
       return(list(aa = "DEL"))
     }
     
-    codon_dna <- Biostrings::complement(DNAString(raw_ex))
+    codon_dna <- Biostrings::complement(Biostrings::DNAString(raw_ex))
     
     amino <- as.character(Biostrings::translate(
       codon_dna, 
