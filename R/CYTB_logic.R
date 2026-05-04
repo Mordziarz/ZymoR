@@ -68,10 +68,10 @@ F129L=20,Y132C=23,G143A=34
       genome_path = f_path,
       forward_primers = c(CYTB_F),
       reverse_primers = c(CYTB_R),
-      min_contig_length = 500,
+      min_contig_length = 1000,
       max_mismatch = 1,
-      max_amplicon_length = 1000,
-      min_amplicon_length = 500,
+      max_amplicon_length = 2000,
+      min_amplicon_length = 1000,
       ...
     )
     
