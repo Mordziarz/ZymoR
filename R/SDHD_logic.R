@@ -23,8 +23,8 @@ SDHD_reference <- Biostrings::DNAString("CAACATCCCAGCTTCTCCATCTACAACTTCTGCTCAATC
 
 
 SDHD_CDS <- IRanges::IRanges(
-  start = c(463, 284, 21),
-  end   = c(713, 403, 231),
+  start = c(503, 331, 21),
+  end   = c(713, 450, 271),
   names = c("CDS1", "CDS2", "CDS3")
 )
 
