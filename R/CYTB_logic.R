@@ -161,24 +161,11 @@ F129L=129,Y132C=132,G143A=143
   check_mut <- function(amp, ref, t_pos) {
     if (length(amp) == 0) return(list(aa = "EMPTY"))
     
-    aln <- pwalign::pairwiseAlignment(
-      pattern = DNAString(as.character(amp)), 
-      subject = ref, 
-      type = "global-local"
-    )
-    
-    sub_aln <- as.character(pwalign::subject(aln))
-    pat_aln <- as.character(pwalign::pattern(aln))
-    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
-    
-    mapped_pos <- match(t_pos, ref_idx)
-    
-    if (any(is.na(mapped_pos))) {
+    if (max(t_pos) > nchar(amp)) {
       return(list(aa = "EMPTY"))
     }
     
-    pat_vec <- strsplit(pat_aln, "")[[1]]
-    raw_ex <- paste0(pat_vec[mapped_pos], collapse = "")
+    raw_ex <- as.character(subseq(amp, start = min(t_pos), width = 3))
     
     if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) {
       return(list(aa = "DEL"))
@@ -206,6 +193,10 @@ F129L=129,Y132C=132,G143A=143
     amp_data <- analyze_genome_results[[i]]
     curr_amp <- amp_data[["with_p"]]
     curr_id  <- as.character(amp_data[["amplicon_id"]])
+    
+    if (is.null(curr_id) || nchar(curr_id) == 0) {
+      curr_id <- paste0("sample_", i)
+    }
     
     res_table[i, "Sample_ID"] <- curr_id
     
