@@ -171,21 +171,20 @@ F129L=129,Y132C=132,G143A=143
     pat_aln <- as.character(pwalign::pattern(aln))
     
     ref_match_start <- attr(aln, "start")[2]
-    
     ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
     
-    if (max(t_pos) > length(ref_idx)) return(list(aa = "EMPTY"))
+    mapped_pos <- match(t_pos, ref_idx)
     
-    t_aln <- ref_idx[t_pos]
-    
-    if (any(is.na(t_aln)) || any(t_aln > nchar(pat_aln))) {
+    if (any(is.na(mapped_pos))) {
       return(list(aa = "EMPTY"))
     }
     
     pat_vec <- strsplit(pat_aln, "")[[1]]
-    raw_ex <- paste0(pat_vec[t_aln], collapse = "")
+    raw_ex <- paste0(pat_vec[mapped_pos], collapse = "")
     
-    if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL"))
+    if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) {
+      return(list(aa = "DEL"))
+    }
     
     codon_dna <- Biostrings::complement(DNAString(raw_ex))
     
