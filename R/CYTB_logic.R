@@ -70,6 +70,7 @@ F129L=129,Y132C=132,G143A=143
       reverse_primers = c(CYTB_R),
       min_contig_length = 300,
       max_mismatch = 2,
+      max_amplicon_length = 800,
       ...
     )
     
