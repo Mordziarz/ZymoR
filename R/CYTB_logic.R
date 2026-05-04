@@ -159,6 +159,8 @@ F129L=129,Y132C=132,G143A=143
   }
   
   check_mut <- function(amp, ref, t_pos) {
+    if (length(amp) == 0) return(list(aa = "EMPTY"))
+    
     aln <- pwalign::pairwiseAlignment(
       pattern = DNAString(as.character(amp)), 
       subject = DNAString(as.character(ref)), 
@@ -167,15 +169,23 @@ F129L=129,Y132C=132,G143A=143
     
     sub_aln <- as.character(pwalign::subject(aln))
     pat_aln <- as.character(pwalign::pattern(aln))
+    
+    ref_match_start <- attr(aln, "start")[2]
+    
     ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
     
-    if(max(t_pos) > length(ref_idx)) return(list(aa = "EMPTY"))
+    if (max(t_pos) > length(ref_idx)) return(list(aa = "EMPTY"))
     
     t_aln <- ref_idx[t_pos]
+    
+    if (any(is.na(t_aln)) || any(t_aln > nchar(pat_aln))) {
+      return(list(aa = "EMPTY"))
+    }
+    
     pat_vec <- strsplit(pat_aln, "")[[1]]
     raw_ex <- paste0(pat_vec[t_aln], collapse = "")
     
-    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL"))
+    if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL"))
     
     codon_dna <- Biostrings::complement(DNAString(raw_ex))
     
