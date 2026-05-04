@@ -68,6 +68,7 @@ F129L=129,Y132C=132,G143A=143
       genome_path = f_path,
       forward_primers = c(CYTB_F),
       reverse_primers = c(CYTB_R),
+      max_mismatch = 2,
       ...
     )
     
