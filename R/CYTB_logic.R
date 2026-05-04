@@ -161,13 +161,25 @@ F129L=129,Y132C=132,G143A=143
   check_mut <- function(amp, ref, t_pos) {
     if (length(amp) == 0) return(list(aa = "EMPTY"))
     
-    amp_dna <- Biostrings::DNAString(as.character(amp))
+    aln <- pwalign::pairwiseAlignment(
+      pattern = Biostrings::DNAString(as.character(amp)),
+      subject = ref,
+      type = "global-local"
+    )
     
-    if (max(t_pos) > length(amp_dna)) {
+    sub_aln <- as.character(pwalign::subject(aln))
+    pat_aln <- as.character(pwalign::pattern(aln))
+    
+    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
+    
+    mapped_pos <- match(t_pos, ref_idx)
+    
+    if (any(is.na(mapped_pos)) || max(mapped_pos) > nchar(pat_aln)) {
       return(list(aa = "EMPTY"))
     }
     
-    raw_ex <- as.character(Biostrings::subseq(amp_dna, start = min(t_pos), width = 3))
+    pat_vec <- strsplit(pat_aln, "")[[1]]
+    raw_ex <- paste0(pat_vec[mapped_pos], collapse = "")
     
     if (nchar(raw_ex) < 3 || grepl("-", raw_ex)) {
       return(list(aa = "DEL"))
@@ -199,7 +211,6 @@ F129L=129,Y132C=132,G143A=143
     if (is.null(curr_id) || nchar(curr_id) == 0) {
       curr_id <- paste0("sample_", i)
     }
-    
     res_table[i, "Sample_ID"] <- curr_id
     
     for (m_name in mut_names) {
@@ -209,7 +220,7 @@ F129L=129,Y132C=132,G143A=143
       mut_res <- check_mut(curr_amp, CYTB_reference, dna_idx)
       wild_aa <- substr(m_name, 1, 1)
       
-      if (mut_res$aa != wild_aa && mut_res$aa != "EMPTY") {
+      if (mut_res$aa != "EMPTY" && mut_res$aa != wild_aa) {
         res_table[i, m_name] <- mut_res$aa
       } else {
         res_table[i, m_name] <- "wt"
