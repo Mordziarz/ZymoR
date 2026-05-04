@@ -21,7 +21,7 @@ CYTB_F <- "CAATAAGTTAGTTATAACTG"
 CYTB_reference <- Biostrings::DNAString("CAATAAGTTAGTTATAACTGTTGCTCCTCATAAAGACATTTGACCATAAGGTAATACATACCCTAAGAATGCGGTTGCCATCATCAGAACTAGTATTATAGTACCGATTGTTCATGTTAATGTTCT")
 CYTB_CDS <- IRanges::IRanges(
   start = c(1),
-  end   = c(456),
+  end   = c(126),
   names = c("CDS1")
 )
   
@@ -68,7 +68,7 @@ F129L=20,Y132C=23,G143A=34
       forward_primers = c(CYTB_F),
       reverse_primers = c(CYTB_R),
       min_contig_length = 100,
-      max_mismatch = 2,
+      max_mismatch = 1,
       max_amplicon_length = 800,
       min_amplicon_length = 50,
       ...
