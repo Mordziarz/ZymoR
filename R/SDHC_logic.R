@@ -148,74 +148,74 @@ T79N=79,W80S=80,N86S=86,H152R=152,V166M=166)
   return(final_table)
 }
 
-.internal_SDHC_processing <- function(analyze_genome_results, SDHC_reference, cds_ranges, SDHC_target_positions) { 
+.internal_SDHC_processing <- function(analyze_genome_results, SDHC_reference, cds_ranges, SDHC_target_positions) {
   
-  get_neg_pos <- function(nt_idx, ranges) { 
-    all_pts <- c() 
-    for(i in seq_along(ranges)) { 
-      all_pts <- c(all_pts, seq(end(ranges[i]), start(ranges[i]))) 
-    } 
-    return(all_pts[nt_idx]) 
-  } 
+  get_neg_pos <- function(nt_idx, ranges) {
+    all_pts <- c()
+    for(i in seq_along(ranges)) {
+      all_pts <- c(all_pts, seq(end(ranges[i]), start(ranges[i])))
+    }
+    return(all_pts[nt_idx])
+  }
   
-  check_mut <- function(amp, ref, t_pos) { 
-    aln <- pwalign::pairwiseAlignment( 
-      pattern = DNAString(as.character(amp)),  
-      subject = DNAString(as.character(ref)),  
-      type = "global-local" 
-    ) 
+  check_mut <- function(amp, ref, t_pos) {
+    aln <- pwalign::pairwiseAlignment(
+      pattern = DNAString(as.character(amp)), 
+      subject = DNAString(as.character(ref)), 
+      type = "global-local"
+    )
     
-    sub_aln <- as.character(pwalign::subject(aln)) 
-    pat_aln <- as.character(pwalign::pattern(aln)) 
-    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-") 
+    sub_aln <- as.character(pwalign::subject(aln))
+    pat_aln <- as.character(pwalign::pattern(aln))
+    ref_idx <- which(strsplit(sub_aln, "")[[1]] != "-")
     
-    if(max(t_pos) > length(ref_idx)) return(list(aa = "EMPTY")) 
+    if(max(t_pos) > length(ref_idx)) return(list(aa = "EMPTY"))
     
-    t_aln <- ref_idx[t_pos] 
-    pat_vec <- strsplit(pat_aln, "")[[1]] 
-    raw_ex <- paste0(pat_vec[t_aln], collapse = "") 
+    t_aln <- ref_idx[t_pos]
+    pat_vec <- strsplit(pat_aln, "")[[1]]
+    raw_ex <- paste0(pat_vec[t_aln], collapse = "")
     
-    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL")) 
+    if(nchar(raw_ex) < 3 || grepl("-", raw_ex)) return(list(aa = "DEL"))
     
-    codon_dna <- Biostrings::complement(DNAString(raw_ex)) 
+    codon_dna <- DNAString(raw_ex)
     
-    amino <- as.character(Biostrings::translate( 
-      codon_dna,  
-      genetic.code = Biostrings::getGeneticCode("4"),  
-      if.fuzzy.codon = "solve", 
-      no.init.codon = TRUE 
-    )) 
+    amino <- as.character(Biostrings::translate(
+      codon_dna, 
+      genetic.code = Biostrings::getGeneticCode("4"), 
+      if.fuzzy.codon = "solve",
+      no.init.codon = TRUE
+    ))
     
-    return(list(aa = amino)) 
-  } 
+    return(list(aa = amino))
+  }
   
-  mut_names <- names(SDHC_target_positions) 
-  col_names <- c("Sample_ID", mut_names) 
+  mut_names <- names(SDHC_target_positions)
+  col_names <- c("Sample_ID", mut_names)
   
-  res_table <- data.frame(matrix(NA, nrow = length(analyze_genome_results), ncol = length(col_names))) 
-  colnames(res_table) <- col_names 
+  res_table <- data.frame(matrix(NA, nrow = length(analyze_genome_results), ncol = length(col_names)))
+  colnames(res_table) <- col_names
   
-  for (i in seq_along(analyze_genome_results)) { 
-    amp_data <- analyze_genome_results[[i]] 
-    curr_amp <- amp_data[["with_p"]] 
-    curr_id  <- as.character(amp_data[["amplicon_id"]]) 
+  for (i in seq_along(analyze_genome_results)) {
+    amp_data <- analyze_genome_results[[i]]
+    curr_amp <- amp_data[["with_p"]]
+    curr_id  <- as.character(amp_data[["amplicon_id"]])
     
-    res_table[i, "Sample_ID"] <- curr_id 
+    res_table[i, "Sample_ID"] <- curr_id
     
-    for (m_name in mut_names) { 
-      aa_num <- SDHC_target_positions[[m_name]] 
-      dna_idx <- get_neg_pos(c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3)), cds_ranges) 
+    for (m_name in mut_names) {
+      aa_num <- SDHC_target_positions[[m_name]]
+      dna_idx <- get_neg_pos(c((aa_num*3)-2, (aa_num*3)-1, (aa_num*3)), cds_ranges)
       
-      mut_res <- check_mut(curr_amp, SDHC_reference, dna_idx) 
-      wild_aa <- substr(m_name, 1, 1) 
+      mut_res <- check_mut(curr_amp, SDHC_reference, dna_idx)
+      wild_aa <- substr(m_name, 1, 1)
       
-      if (mut_res$aa != wild_aa && mut_res$aa != "EMPTY") { 
-        res_table[i, m_name] <- mut_res$aa 
-      } else { 
-        res_table[i, m_name] <- "wt" 
-      } 
-    } 
-  } 
+      if (mut_res$aa != wild_aa && mut_res$aa != "EMPTY") {
+        res_table[i, m_name] <- mut_res$aa
+      } else {
+        res_table[i, m_name] <- "wt"
+      }
+    }
+  }
   
-  return(res_table) 
+  return(res_table)
 }
