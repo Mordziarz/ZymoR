@@ -162,47 +162,30 @@ analyze_indels <- function(amp_seq, ref_seq) {
   
   indel_info <- pwalign::indel(aln)
   
-  insertions <- indel_info@insertion
-  deletions  <- indel_info@deletion
+  ins_widths <- Biostrings::width(indel_info@insertion)
+  del_widths <- Biostrings::width(indel_info@deletion)
   
-  ins_widths <- Biostrings::width(insertions)
-  del_widths <- Biostrings::width(deletions)
+  num_insertions <- length(indel_info@insertion)
+  num_deletions  <- length(indel_info@deletion)
   
-  num_insertions <- length(insertions)
-  num_deletions  <- length(deletions)
-  
-  classify_single_indel <- function(w) {
-    if (length(w) == 1) {
-      if (w >= 480 & w <= 550) {
-        return("Type_I")
-      } else if (w >= 130 & w <= 370) {
-        return("Type_II")
-      } else if (abs(w - 149) < 15) {
-        return("Type_III")
-      } else if (w > 20) {
-        return("Rare_Or_Indel")
-      } else {
-        return("None")
-      }
-    } else {
-      sapply(w, function(x) {
-        if (x >= 480 & x <= 550) {
-          "Type_I"
-        } else if (x >= 130 & x <= 370) {
-          "Type_II"
-        } else if (abs(x - 149) < 15) {
-          "Type_III"
-        } else if (x > 20) {
-          "Rare_Or_Indel"
-        } else {
-          "None"
-        }
-      })
-    }
+  classify_indel_vector <- function(w) {
+    if (length(w) == 0) return("None")
+    
+    result <- character(length(w))
+    result[w >= 480 & w <= 550] <- "Type_I"
+    result[w >= 130 & w <= 370] <- "Type_II"
+    result[abs(w - 149) < 15] <- "Type_III"
+    
+    other_idx <- result == "" & w > 20
+    result[other_idx] <- "Rare_Or_Indel"
+    
+    result[result == ""] <- "None"
+    
+    return(result)
   }
   
   if (num_insertions > 0) {
-    insert_types <- classify_single_indel(ins_widths)
+    insert_types <- classify_indel_vector(ins_widths)
   } else {
     insert_types <- "None"
   }
