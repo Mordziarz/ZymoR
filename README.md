@@ -112,3 +112,21 @@ get_SDHC_res <- ZymoR::get_SDHC(input_path="path_to_your_folder_or_fasta",output
 
 print(get_SDHC_res)
 ```
+
+# SDHB
+
+```r
+get_SDHB_res <- ZymoR::get_SDHB(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
+
+
+print(get_SDHB_res)
+```
+
+# MFS1
+
+```r
+get_MFS1_res <- ZymoR::get_MFS1(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
+
+
+print(get_MFS1_res)
+```
