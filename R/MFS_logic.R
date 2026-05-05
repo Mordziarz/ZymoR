@@ -15,16 +15,17 @@
 
 get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
   
-  MFS_F <- "GGAATGCGAGGAGAGGGTAA"
+  MFS_F <- "AGCGGAGCGGGACGAATCGA"
   MFS_R <- "GGTTCCTTCCCGTCATACTCATTGCCATTGGAG"
   
-  MFS_reference <- Biostrings::DNAString("GGAATGCGAGGAGAGGGTAAGGTAGGTGAACACCTTATACTCCGTTTCTTTCCCATTCCTCTCCTCCATCATCACAGTCATCAGATCCGCACAACAATCATTCGGGTTCGGTTCCTTCCCGTCATACTCATTGCCATTGGAG")
+  MFS_reference <- Biostrings::DNAString("AGCGGAGCGGGACGAATCGAGAACATGATCCCTGATCCGTTCCCGTTCGATCTCGCTTATTACGAGACGAGAAAAAGACAGCCACAGCCGCAAGGATTCGGACTTGACGACTTTTCGGTGGACAGGACAGATTCCGGACGGGGTAGGAATGCGAGGAGAGGGTAAGGTAGGTGAACACCTTATACTCCGTTTCTTTCCCATTCCTCTCCTCCATCATCACAGTCATCAGATCCGCACAACAATCATTCGGGTTCGGTTCCTTCCCGTCATACTCATTGCCATTGGAG")
+  
   mfs1_db <- list(
-    "Type_I"   = "519 bp Insert",
-    "Type_II"  = "150–369 bp Insert",
-    "Type_III" = "149 bp Insert",
+    "Type_I"        = "519 bp Insert",
+    "Type_II"       = "150–369 bp Insert",
+    "Type_III"      = "149 bp Insert",
     "Rare_Or_Indel" = "Rare variant or specific Indel",
-    "None"     = "No insertion"
+    "None"          = "No insertion"
   )
   
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
@@ -52,7 +53,7 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
   global_amplicons_with <- list()
   global_amplicons_no   <- list()
   
-  cat("=== Starting MFS1 Pipeline ===\n")
+  cat("=== Starting Comprehensive MFS1 Pipeline ===\n")
   cat("Total files to process:", length(fasta_files), "\n\n")
   
   for (f_path in fasta_files) {
@@ -100,29 +101,18 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
       }
     }
     
-    curr_len <- nchar(as.character(amp_results[[1]]$with_p))
-    ref_len <- nchar(as.character(MFS_reference))
-    diff_len <- curr_len - ref_len
+    curr_seq <- amp_results[[1]]$with_p
+    res_indels <- analyze_indels(curr_seq, MFS_reference)
     
-    if (diff_len > 480 && diff_len < 550) {
-      insert_type <- "Type_I"
-    } else if (diff_len >= 148 && diff_len <= 370) {
-      if (abs(diff_len - 149) < 5) {
-        insert_type <- "Type_III"
-      } else {
-        insert_type <- "Type_II"
-      }
-    } else if (abs(diff_len) < 20) {
-      insert_type <- "None"
-    } else {
-      insert_type <- "Rare_Or_Indel"
-    }
-    
+    # Obsługa dla wielu indelów, aby nie zostały utracone w typach
     res_df <- data.frame(
       Sample_ID = file_label,
-      Insert_Type = insert_type,
-      Description = mfs1_db[[insert_type]],
-      Diff_Length = diff_len,
+      Insert_Type = paste(res_indels$Insert_Types, collapse = ", "),
+      Description = paste(sapply(res_indels$Insert_Types, function(x) mfs1_db[[x]] %||% x), collapse = "; "),
+      Ins_Count = res_indels$Ins_Count,
+      Ins_Lengths = paste(res_indels$Ins_Lengths, collapse = ", "),
+      Del_Count = res_indels$Del_Count,
+      Del_Lengths = paste(res_indels$Del_Lengths, collapse = ", "),
       stringsAsFactors = FALSE
     )
     
@@ -159,4 +149,52 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
   
   cat("\n=== Complete ===\n")
   return(final_table)
+}
+
+# Pomocnicza funkcja obsługująca brakujący element w liście
+`%||%` <- function(x, y) if (length(x) == 0) y else x
+
+analyze_indels <- function(amp_seq, ref_seq) {
+  
+  aln <- pwalign::pairwiseAlignment(
+    pattern = amp_seq,
+    subject = ref_seq,
+    type = "global"
+  )
+  
+  indel_info <- pwalign::indel(aln)
+  
+  insertions <- indel_info@insertion
+  deletions  <- indel_info@deletion
+  
+  ins_widths <- Biostrings::width(insertions)
+  del_widths <- Biostrings::width(deletions)
+  
+  num_insertions <- length(insertions)
+  num_deletions  <- length(deletions)
+  
+  # Klasyfikacja każdego indela osobno
+  classify_indel <- function(w) {
+    if (w >= 480 && w <= 550) {
+      return("Type_I")
+    } else if (w >= 130 && w <= 370) {
+      return("Type_II")
+    } else if (abs(w - 149) < 15) {
+      return("Type_III")
+    } else if (w > 20) {
+      return("Rare_Or_Indel")
+    } else {
+      return("None")
+    }
+  }
+  
+  insert_types <- if (num_insertions > 0) sapply(ins_widths, classify_indel) else "None"
+  
+  return(list(
+    Insert_Types = insert_types,
+    Ins_Count = num_insertions,
+    Ins_Lengths = ins_widths,
+    Del_Count = num_deletions,
+    Del_Lengths = del_widths
+  ))
 }
