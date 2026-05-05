@@ -63,6 +63,7 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
       genome_path = f_path,
       forward_primers = c(MFS_F),
       reverse_primers = c(MFS_R),
+      min_contig_length = 100,
       ...
     )
     
