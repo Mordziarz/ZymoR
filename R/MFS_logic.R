@@ -104,7 +104,6 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
     curr_seq <- amp_results[[1]]$with_p
     res_indels <- analyze_indels(curr_seq, MFS_reference)
     
-    # Obsługa dla wielu indelów, aby nie zostały utracone w typach
     res_df <- data.frame(
       Sample_ID = file_label,
       Insert_Type = paste(res_indels$Insert_Types, collapse = ", "),
@@ -151,7 +150,6 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
   return(final_table)
 }
 
-# Pomocnicza funkcja obsługująca brakujący element w liście
 `%||%` <- function(x, y) if (length(x) == 0) y else x
 
 analyze_indels <- function(amp_seq, ref_seq) {
@@ -173,7 +171,6 @@ analyze_indels <- function(amp_seq, ref_seq) {
   num_insertions <- length(insertions)
   num_deletions  <- length(deletions)
   
-  # Klasyfikacja każdego indela osobno
   classify_indel <- function(w) {
     if (w >= 480 && w <= 550) {
       return("Type_I")
