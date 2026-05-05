@@ -184,7 +184,7 @@ R47W=47,I50L=50)
     
     amino <- as.character(Biostrings::translate( 
       codon_dna,  
-      genetic.code = Biostrings::getGeneticCode("1"),  
+      genetic.code = Biostrings::getGeneticCode("4"),  
       if.fuzzy.codon = "solve", 
       no.init.codon = TRUE 
     )) 

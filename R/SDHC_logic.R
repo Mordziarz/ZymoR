@@ -25,7 +25,6 @@ SDHC_CDS <- IRanges::IRanges(
   end   = c(695, 194, 40),
   names = c("CDS1", "CDS2", "CDS3")
 )
-
   
 SDHC_target_positions <- c(
 T79N=79,W80S=80,N86S=86,H152R=152,V166M=166)
@@ -182,7 +181,7 @@ T79N=79,W80S=80,N86S=86,H152R=152,V166M=166)
     
     amino <- as.character(Biostrings::translate( 
       codon_dna,  
-      genetic.code = Biostrings::getGeneticCode("1"),  
+      genetic.code = Biostrings::getGeneticCode("4"),  
       if.fuzzy.codon = "solve", 
       no.init.codon = TRUE 
     )) 
