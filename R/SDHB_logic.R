@@ -27,7 +27,10 @@ SDHB_CDS <- IRanges::IRanges(
 )
   
 SDHB_target_positions <- c(
-N225I/T=225,H267Y/R/L=267,T268I=268,I269V/T=269)
+`N225I/T`=225,
+`H267Y/R/L`=267,
+`T268I`=268,
+`I269V/T`=269)
 
   
   if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
