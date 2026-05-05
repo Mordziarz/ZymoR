@@ -65,7 +65,7 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
       forward_primers = c(MFS_F),
       reverse_primers = c(MFS_R),
       min_contig_length = 100,
-      max_mismatch = 1,
+      max_mismatch = 2,
       ...
     )
     
@@ -171,32 +171,25 @@ analyze_indels <- function(amp_seq, ref_seq) {
   num_insertions <- length(insertions)
   num_deletions  <- length(deletions)
   
-  classify_indel <- function(w) {
-    if (length(w) == 1) {
-      if (w >= 480 && w <= 550) {
-        return("Type_I")
-      } else if (w >= 130 && w <= 370) {
-        return("Type_II")
-      } else if (abs(w - 149) < 15) {
-        return("Type_III")
-      } else if (w > 20) {
-        return("Rare_Or_Indel")
-      } else {
-        return("None")
-      }
+  classify_single_indel <- function(w) {
+    if (w >= 480 && w <= 550) {
+      return("Type_I")
+    } else if (w >= 130 && w <= 370) {
+      return("Type_II")
+    } else if (abs(w - 149) < 15) {
+      return("Type_III")
+    } else if (w > 20) {
+      return("Rare_Or_Indel")
     } else {
-      results <- sapply(w, function(x) {
-        if (x >= 480 && x <= 550) "Type_I"
-        else if (x >= 130 && x <= 370) "Type_II"
-        else if (abs(x - 149) < 15) "Type_III"
-        else if (x > 20) "Rare_Or_Indel"
-        else "None"
-      })
-      return(paste(unique(results), collapse = ", "))
+      return("None")
     }
   }
   
-  insert_types <- if (num_insertions > 0) classify_indel(ins_widths) else "None"
+  if (num_insertions > 0) {
+    insert_types <- sapply(ins_widths, classify_single_indel)
+  } else {
+    insert_types <- "None"
+  }
   
   return(list(
     Insert_Types = insert_types,
