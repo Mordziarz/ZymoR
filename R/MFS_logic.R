@@ -162,11 +162,11 @@ analyze_indels <- function(amp_seq, ref_seq) {
   
   indel_info <- pwalign::indel(aln)
   
-  ins_widths <- as.integer(Biostrings::width(indel_info@insertion))
-  del_widths <- as.integer(Biostrings::width(indel_info@deletion))
+  ins_widths <- as.integer(unlist(Biostrings::width(indel_info@insertion)))
+  del_widths <- as.integer(unlist(Biostrings::width(indel_info@deletion)))
   
-  num_insertions <- length(indel_info@insertion)
-  num_deletions  <- length(indel_info@deletion)
+  num_insertions <- length(unlist(indel_info@insertion))
+  num_deletions  <- length(unlist(indel_info@deletion))
   
   classify_indel_vector <- function(w) {
     if (length(w) == 0) return("None")
