@@ -68,7 +68,7 @@ R47W=47,I50L=50)
       forward_primers = c(SDHD_F),
       reverse_primers = c(SDHD_R),
       min_contig_length = 500,
-      max_mismatch = 3,
+      max_mismatch =1,
       max_amplicon_length = 1000,
       min_amplicon_length = 500,
       ...
