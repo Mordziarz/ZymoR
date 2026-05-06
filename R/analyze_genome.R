@@ -20,7 +20,7 @@
 analyze_genome <- function(genome_path,
                            forward_primers,
                            reverse_primers,
-                           max_mismatch = 1,
+                           max_mismatch = 3,
                            max_amplicon_length = 5000,
                            min_amplicon_length = 100,
                            all = FALSE,
