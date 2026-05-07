@@ -27,7 +27,7 @@ CYTB_CDS <- IRanges::IRanges(
 )
   
 CYTB_target_positions <- c(
-F129L=45,Y132C=48,G143A=59
+F129L=24,Y132C=27,G143A=38
 )
 
   
