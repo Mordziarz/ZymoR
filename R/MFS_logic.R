@@ -22,7 +22,7 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
   
   mfs1_db <- list(
     "Type_I"        = "519 bp Insert",
-    "Type_II"       = "150–369 bp Insert",
+    "Type_II"       = "150-369 bp Insert",
     "Type_III"      = "149 bp Insert",
     "Rare_Or_Indel" = "Rare variant or specific Indel",
     "None"          = "No insertion"
