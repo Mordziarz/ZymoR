@@ -38,6 +38,8 @@ library(pwalign)
 
 # CYP51
 
+CYP51 haplotypes in Zymoseptoria tritici (based on Huf et. al., 2018 and Gaab et al., 2024)
+
 ```r
 get_CYP51_res <- ZymoR::get_CYP51(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
 
@@ -71,6 +73,8 @@ print(get_CYP51_res)
 
 # CYTB
 
+Mutations in the mitochondrial cytochrome b (cytb) gene associated with resistance to QoI (strobilurin) fungicides (FRAC Group 11).
+
 ```r
 get_CYTB_res <- ZymoR::get_CYTB(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
 
@@ -78,24 +82,17 @@ get_CYTB_res <- ZymoR::get_CYTB(input_path="path_to_your_folder_or_fasta",output
 print(get_CYTB_res)
 ```
 
-| Sample_ID | F129L | Y132C | G143A |
-|:---|:---|:---|:---|
-| 1M3a | wt | wt | A |
-| 1WIDPa | wt | wt | A |
-| 1WIDPe | wt | wt | A |
-| 25B16 | wt | wt | A |
-| 25B25 | wt | wt | A |
-| 25B33 | wt | wt | A |
-| 2m | wt | wt | A |
-| 3mb | wt | wt | A |
-| DP152 | wt | wt | A |
-| IPO323 | wt | wt | wt |
-| IRE30 | L | wt | wt |
-| NT321 | wt | wt | A |
-| pgp | wt | wt | A |
-| scaffolds | wt | wt | A |
+| Mutation | Amino acid substitution | Fungicide group affected | Resistance level | Status in *Z. tritici* |
+| :--- | :--- | :--- | :--- | :--- |
+| **F129L** | Phenylalanine &rarr; Leucine (codon 129) | QoIs (strobilurins) | Moderate / partial | Rare or sporadic in field populations (PMC) |
+| **Y132C** | Tyrosine &rarr; Cysteine (codon 132) | metyltetraprole (QoL subgroup 11A) | Reduced sensitivity / resistance | Laboratory-selected; associated with fitness penalty (ScienceDirect) |
+| **G143A** | Glycine &rarr; Alanine (codon 143) | QoIs (strobilurins) | High / near-complete resistance | Major global field resistance mutation (PMC) |
+| **G137R** | Glycine &rarr; Arginine (codon 137) | QoIs (strobilurins) | Moderate / partial | Very rare; mostly reported in other fungi, only sporadic relevance to *Z. tritici* |
 
 # SDHD
+
+SDHD mutations associated with reduced sensitivity to fungicides
+
 
 ```r
 get_SDHD_res <- ZymoR::get_SDHD(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -104,7 +101,15 @@ get_SDHD_res <- ZymoR::get_SDHD(input_path="path_to_your_folder_or_fasta",output
 print(get_SDHD_res)
 ```
 
+| Mutation | Amino acid substitution | SDHI resistance phenotype | Notes |
+| :--- | :--- | :--- | :--- |
+| **R47W** | Arginine &rarr; Tryptophan at codon 47 | Reduced sensitivity / resistance to multiple SDHIs | Detected in field isolates together with SdhC-H152R; associated with strong reduction in sensitivity to penthiopyrad and several other SDHIs. |
+| **I50L** | Isoleucine &rarr; Leucine at codon 50 | Reduced SDHI sensitivity | Reported as a less common SDHD substitution associated with altered SDHI sensitivity; generally considered lower impact than major SDHB/C mutations. |
+
+
 # SDHC
+
+SDHC mutations associated with reduced sensitivity to fungicides
 
 ```r
 get_SDHC_res <- ZymoR::get_SDHC(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -113,7 +118,18 @@ get_SDHC_res <- ZymoR::get_SDHC(input_path="path_to_your_folder_or_fasta",output
 print(get_SDHC_res)
 ```
 
+| Mutation | Amino acid substitution | SDHI resistance phenotype | Notes |
+| :--- | :--- | :--- | :--- |
+| **T79N/I** | Threonine &rarr; Asparagine / Isoleucine at codon 79 | Low to moderate resistance to multiple SDHIs | Among the most common SDHC mutations in European field populations; associated with reduced sensitivity to fluxapyroxad, bixafen, penthiopyrad, and related SDHIs. |
+| **W80S** | Tryptophan &rarr; Serine at codon 80 | Moderate SDHI resistance | First detected in UK populations around 2012; confers reduced sensitivity to several commercial SDHIs. |
+| **S83G** | Serine &rarr; Glycine at codon 83 | Reduced SDHI sensitivity (less commonly reported) | Rare mutation; discussed less frequently than T79N or H152R and considered of lower epidemiological importance. |
+| **N86S** | Asparagine &rarr; Serine at codon 86 | Low to moderate resistance | One of the most prevalent SDHC mutations in Europe; widespread in western and northern European populations. |
+| **H152R** | Histidine &rarr; Arginine at codon 152 | High resistance / major sensitivity shift | The most impactful SDHC mutation identified so far in *Z. tritici*; associated with strong cross-resistance to most commercial SDHIs and reduced field efficacy. |
+| **V166M** | Valine &rarr; Methionine at codon 166 | Reduced SDHI sensitivity | Less common field mutation; reported from European monitoring studies, usually with lower resistance impact than H152R. |
+
 # SDHB
+
+SDHB mutations associated with reduced sensitivity to fungicides
 
 ```r
 get_SDHB_res <- ZymoR::get_SDHB(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -121,6 +137,13 @@ get_SDHB_res <- ZymoR::get_SDHB(input_path="path_to_your_folder_or_fasta",output
 
 print(get_SDHB_res)
 ```
+
+| Mutation | Amino acid substitution | SDHI resistance phenotype | Notes |
+| :--- | :--- | :--- | :--- |
+| **N225I/T** | Asparagine &rarr; Isoleucine / Threonine at codon 225 | Low to moderate resistance to SDHIs | Common field mutation; associated with reduced sensitivity but generally weaker than major SDHC mutations like H152R. Often detected in European monitoring populations. |
+| **H267Y/R/L** | Histidine &rarr; Tyrosine / Arginine / Leucine at codon 267 | Moderate resistance (variable cross-resistance) | Lab- and field-documented mutation cluster; can affect sensitivity depending on SDHI compound. Sometimes shows differential cross-resistance patterns. |
+| **T268I** | Threonine &rarr; Isoleucine at codon 268 | Low to moderate resistance | Frequently observed in field populations; often co-occurs with other SDH mutations; contributes to additive resistance. |
+| **I269V/T** | Isoleucine &rarr; Valine / Threonine at codon 269 | Low resistance / minor sensitivity shift | Less frequent and typically lower impact; usually part of multi-mutation genotypes rather than a strong standalone resistance driver. |
 
 # MFS1
 
@@ -130,3 +153,18 @@ get_MFS1_res <- ZymoR::get_MFS1(input_path="path_to_your_folder_or_fasta",output
 
 print(get_MFS1_res)
 ```
+
+* **Type I (519 bp Insert)**
+  * **Description:** This is a 519-base pair sequence derived from an ancient Ty1/Copia retrotransposon (an LTR retro-element). It contains four conserved MCB (MluI cell cycle box) motifs that act as strong transcriptional activators.
+  * **Impact:** It is the strongest known driver of *MFS1* overexpression, leading to high resistance levels across multiple fungicide classes, including DMIs (azoles), SDHIs, and QoIs.
+
+* **Type II (150–369 bp Inserts)**
+  * **Description:** These are shorter insertions (variants include IIA, IIB, and others up to IIF) that share conserved domains with retrotransposons of the RLX_Lard_Gridr family.
+  * **Impact:** Like Type I, these lead to *MFS1* overexpression and an MDR (multidrug resistance) phenotype, although the level of resistance and expression can be slightly lower than Type I.
+
+* **Type III (149 bp Insert)**
+  * **Description:** A significantly shorter insertion of 149 base pairs.
+  * **Impact:** This mutation confers weaker resistance compared to Types I and II, as it results in a lower level of *MFS1* overexpression.
+
+* **Other Rare Variants**
+  * **Description & Impact:** Includes larger inserts (>519 bp) and specific insertion-deletion (indel) events in the 5&prime; UTR. Some of these, such as Indel VIII, are linked to terbinafine and metyltetraprole resistance, while others (like Type VI) appear not to confer resistance at all, suggesting the promoter is a highly plastic "hot-spot" for mutations.
