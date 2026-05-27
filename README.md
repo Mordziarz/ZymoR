@@ -38,7 +38,7 @@ library(pwalign)
 
 # CYP51
 
-CYP51 haplotypes in Zymoseptoria tritici (based on Huf et. al., 2018 and Gaab et al., 2024)
+CYP51 haplotypes in Zymoseptoria tritici (based on Huf et. al., 2018 and Gaab et al., 2024).
 
 ```r
 get_CYP51_res <- ZymoR::get_CYP51(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -91,7 +91,7 @@ print(get_CYTB_res)
 
 # SDHD
 
-SDHD mutations associated with reduced sensitivity to fungicides
+SDHD mutations associated with reduced sensitivity to fungicides.
 
 
 ```r
@@ -109,7 +109,7 @@ print(get_SDHD_res)
 
 # SDHC
 
-SDHC mutations associated with reduced sensitivity to fungicides
+SDHC mutations associated with reduced sensitivity to fungicides.
 
 ```r
 get_SDHC_res <- ZymoR::get_SDHC(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -129,7 +129,7 @@ print(get_SDHC_res)
 
 # SDHB
 
-SDHB mutations associated with reduced sensitivity to fungicides
+SDHB mutations associated with reduced sensitivity to fungicides.
 
 ```r
 get_SDHB_res <- ZymoR::get_SDHB(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
@@ -146,6 +146,8 @@ print(get_SDHB_res)
 | **I269V/T** | Isoleucine &rarr; Valine / Threonine at codon 269 | Low resistance / minor sensitivity shift | Less frequent and typically lower impact; usually part of multi-mutation genotypes rather than a strong standalone resistance driver. |
 
 # MFS1
+
+Insertions found in promoter region of MFS1.
 
 ```r
 get_MFS1_res <- ZymoR::get_MFS1(input_path="path_to_your_folder_or_fasta",output_dir = "your_output_folder_name")
