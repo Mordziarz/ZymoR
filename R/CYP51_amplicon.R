@@ -28,8 +28,6 @@
 
 get_CYP51_amplicon <- function(input_bam) {
 
-`.` <- list
-
 CYP51_CDS <- IRanges::IRanges(start = c(1461, 1010, 886, 1), end = c(1907, 1403, 904, 775))
 
 CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178=178, S188=188, S208=208,
@@ -194,7 +192,7 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
   target_names <- names(CYP51_target_positions)
   gen_code <- Biostrings::getGeneticCode("1")
   
-  db_dt <- rbindlist(lapply(names(CYP51_db), function(h) as.data.table(as.list(CYP51_db[[h]]))[, Haplotype := h]), fill = TRUE)
+  db_dt <- rbindlist(lapply(names(CYP51_db), function(h) temp_dt <- as.data.table(as.list(CYP51_db[[h]]))temp_dt[, Haplotype := h]), fill = TRUE)
   for (col in target_names) { if (!col %in% names(db_dt)) set(db_dt, j = col, value = "wt"); set(db_dt, i = which(is.na(db_dt[[col]])), j = col, value = "wt") }
   setkeyv(db_dt, target_names)
   
