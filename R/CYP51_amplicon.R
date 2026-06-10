@@ -28,8 +28,6 @@
 
 get_CYP51_amplicon <- function(input_bam) {
 
-library(data.table)
-
 CYP51_CDS <- IRanges::IRanges(start = c(1461, 1010, 886, 1), end = c(1907, 1403, 904, 775))
 
 CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178=178, S188=188, S208=208,
