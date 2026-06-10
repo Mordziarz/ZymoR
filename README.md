@@ -219,7 +219,7 @@ minimap2 -x map-ont -a -t 8 reference_zymoseptoria.fasta barcode26.fastq.gz | sa
 
 ZymoR enables you to analyze the `CYP51`, `CYTB`, `SDHB`, `SDHC`, and `SDHD` genes directly from BAM files. By performing the mapping, sorting, and indexing steps described above, you can effectively assess genetic variation and diversity within a single sample using the aligned reads.
 
-# CYP51
+### CYP51
 
 ```R
 results <- get_CYP51_amplicon(input_bam = "path_to_your_bam_or_directory")
