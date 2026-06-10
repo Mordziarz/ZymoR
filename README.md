@@ -200,7 +200,7 @@ ZymoR includes a built-in database of reference sequences for the `CYP51`, `CYTB
 To save the reference sequences (FASTA format) to your current working directory, run in R:
 
 ```r
-get_reference_sequences() - poprzez to wywolanie powinny zapisac sie ssekwencje referencyjne 5 genów w twoim workdir
+get_reference_sequences()
 
 ```
 
