@@ -1,7 +1,6 @@
 # ZymoR
 ZymoR is a package for rapid identification of Cyp51 haplotypes in Zymoseptoria tritici. The package also detects mutations in CYTB and SDH genes associated with fungicide resistance, as well as insertions in the promoter regions of CYP51 and MFS1. 
 
-
 # Installation 
 ```r
 install.packages("devtools")
