@@ -30,6 +30,8 @@ get_CYP51_amplicon <- function(input_bam) {
 
 .datatable.aware <- TRUE
 
+Haplotype <- i.Haplotype <- NULL
+
 CYP51_CDS <- IRanges::IRanges(start = c(1461, 1010, 886, 1), end = c(1907, 1403, 904, 775))
 
 CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178=178, S188=188, S208=208,
@@ -194,8 +196,14 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
   target_names <- names(CYP51_target_positions)
   gen_code <- Biostrings::getGeneticCode("1")
   
-  db_dt <- rbindlist(lapply(names(CYP51_db), function(h) as.data.table(as.list(CYP51_db[[h]]))[, Haplotype := h]), fill = TRUE)
+  #db_dt <- rbindlist(lapply(names(CYP51_db), function(h) as.data.table(as.list(CYP51_db[[h]]))[, Haplotype := h]), fill = TRUE)
   
+  db_list <- lapply(names(CYP51_db), function(h) {
+  dt <- as.data.table(as.list(CYP51_db[[h]]))
+  set(dt, j = "Haplotype", value = h)
+  })
+  db_dt <- rbindlist(db_list, fill = TRUE)
+
   for (col in target_names) { if (!col %in% names(db_dt)) set(db_dt, j = col, value = "wt"); set(db_dt, i = which(is.na(db_dt[[col]])), j = col, value = "wt") }
   setkeyv(db_dt, target_names)
   
@@ -241,15 +249,23 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
           res_vec[idx_non_del] <- ifelse(aas == substr(m_name, 1, 1), "wt", aas)
         }
       }
-      res_dt[, (m_name) := res_vec]
+      #res_dt[, (m_name) := res_vec]
+      set(res_dt, j = m_name, value = res_vec)
     }
     
     setkeyv(res_dt, target_names)
-    res_dt[db_dt, Haplotype := i.Haplotype, on = target_names]
-    res_dt[is.na(Haplotype), Haplotype := "Unknown"]
+    #res_dt[db_dt, Haplotype := i.Haplotype, on = target_names]
+    #res_dt[is.na(Haplotype), Haplotype := "Unknown"]
     
+    #sample_summary <- res_dt[, .(N = .N), by = Haplotype]
+    #sample_summary[, sample := sample_name]
+
+    res_dt <- merge(res_dt, db_dt, by = target_names, all.x = TRUE)
+    set(res_dt, i = which(is.na(res_dt$Haplotype)), j = "Haplotype", value = "Unknown")
+
     sample_summary <- res_dt[, .(N = .N), by = Haplotype]
-    sample_summary[, sample := sample_name]
+    set(sample_summary, j = "sample", value = sample_name)
+
     final_results <- rbind(final_results, sample_summary)
   }
   
