@@ -251,7 +251,8 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
         res_vec[valid_idx[is_del]] <- "Del"
         if (any(!is_del)) {
           idx_non_del <- valid_idx[!is_del]
-          codon_dnas <- complement(DNAStringSet(codons[!is_del]))
+          #codon_dnas <- complement(DNAStringSet(codons[!is_del]))
+          codon_dnas <- reverseComplement(DNAStringSet(codons[!is_del]))
           aas <- as.character(translate(codon_dnas, genetic.code = gen_code, if.fuzzy.codon = "solve", no.init.codon = TRUE))
           res_vec[idx_non_del] <- ifelse(aas == substr(m_name, 1, 1), "wt", aas)
         }
