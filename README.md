@@ -44,8 +44,8 @@ library(GenomicAlignments)
 library(Biostrings)
 library(data.table)
 ```
-
-# CYP51
+# Identification from genome assembly
+## CYP51
 
 CYP51 haplotypes in Zymoseptoria tritici (based on Huf et. al., 2018 and Gaab et al., 2024).
 
@@ -80,7 +80,7 @@ print(get_CYP51_res)
 | strain_12 | Unknown | NEW | NO | wt | wt | wt | A | wt | wt | wt | wt | wt | wt | wt | wt | wt | G | V | wt | wt | wt | wt | S | wt | wt | wt | wt | T |
 
 
-# CYTB
+## CYTB
 
 Mutations in the mitochondrial cytochrome b (cytb) gene associated with resistance to QoI (strobilurin) fungicides (FRAC Group 11).
 
@@ -98,7 +98,7 @@ print(get_CYTB_res)
 | **G143A** | Glycine &rarr; Alanine (codon 143) | QoIs (strobilurins) | High / near-complete resistance | Major global field resistance mutation (PMC) |
 | **G137R** | Glycine &rarr; Arginine (codon 137) | QoIs (strobilurins) | Moderate / partial | Very rare; mostly reported in other fungi, only sporadic relevance to *Z. tritici* |
 
-# SDHD
+## SDHD
 
 SDHD mutations associated with reduced sensitivity to fungicides.
 
@@ -116,7 +116,7 @@ print(get_SDHD_res)
 | **I50L** | Isoleucine &rarr; Leucine at codon 50 | Reduced SDHI sensitivity | Reported as a less common SDHD substitution associated with altered SDHI sensitivity; generally considered lower impact than major SDHB/C mutations. |
 
 
-# SDHC
+## SDHC
 
 SDHC mutations associated with reduced sensitivity to fungicides.
 
@@ -136,7 +136,7 @@ print(get_SDHC_res)
 | **H152R** | Histidine &rarr; Arginine at codon 152 | High resistance / major sensitivity shift | The most impactful SDHC mutation identified so far in *Z. tritici*; associated with strong cross-resistance to most commercial SDHIs and reduced field efficacy. |
 | **V166M** | Valine &rarr; Methionine at codon 166 | Reduced SDHI sensitivity | Less common field mutation; reported from European monitoring studies, usually with lower resistance impact than H152R. |
 
-# SDHB
+## SDHB
 
 SDHB mutations associated with reduced sensitivity to fungicides.
 
@@ -154,7 +154,7 @@ print(get_SDHB_res)
 | **T268I** | Threonine &rarr; Isoleucine at codon 268 | Low to moderate resistance | Frequently observed in field populations; often co-occurs with other SDH mutations; contributes to additive resistance. |
 | **I269V/T** | Isoleucine &rarr; Valine / Threonine at codon 269 | Low resistance / minor sensitivity shift | Less frequent and typically lower impact; usually part of multi-mutation genotypes rather than a strong standalone resistance driver. |
 
-# MFS1
+## MFS1
 
 Insertions found in promoter region of MFS1.
 
