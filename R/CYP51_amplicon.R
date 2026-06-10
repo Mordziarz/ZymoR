@@ -1,0 +1,254 @@
+#' Analyze CYP51 gene haplotypes from BAM files
+#'
+#' This function processes BAM files to identify CYP51 gene haplotypes based on 
+#' predefined mutational profiles. It handles alignment, codon translation, 
+#' and haplotype matching, returning a summary count of each haplotype per sample.
+#'
+#' @param input_bam A character string representing the file path to a single 
+#'   BAM file or a directory containing multiple BAM files.
+#' @param output_dir A character string specifying the directory for output 
+#'   (optional, default: "zymor_results").
+#'
+#' @return A \code{data.table} with three columns:
+#'   \item{sample}{The name of the analyzed sample.}
+#'   \item{Haplotype}{The identified haplotype (e.g., "A1", "B10", or "Unknown").}
+#'   \item{N}{The number of reads assigned to that specific haplotype.}
+#'
+#' @details 
+#' The function uses \code{Biostrings} for sequence manipulation and 
+#' \code{GenomicAlignments} for BAM file handling. It attempts to use the 
+#' \code{cigarillo} package for sequence projection if available, otherwise 
+#' falls back to the deprecated \code{sequenceLayer} function.
+#'
+#' @import data.table
+#' @import GenomicAlignments
+#' @import Biostrings
+#' @import Rsamtools
+#' @export
+
+get_CYP51_amplicon <- function(input_bam) {
+
+CYP51_CDS <- IRanges::IRanges(start = c(1461, 1010, 886, 1), end = c(1907, 1403, 904, 775))
+
+CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178=178, S188=188, S208=208,
+                            S259=259, N284=284, H303=303, A311=311, G312=312, A379=379, I381=381, A410=410,
+                            G412=412, Y459=459, G460=460, Y461=461, G476=476, V490=490, G510=510, N513=513, S524=524)
+
+  CYP51_db <- list(
+  # --- Single Mutations (A) ---
+  "A1"  = c(G460 = "D"),
+  "A2"  = c(L50 = "S"),
+  "A3"  = c(Y137 = "F"),
+  "A4"  = c(V136 = "C"),
+  "A5"  = c(Y461 = "Del"),
+  "A6"  = c(S259 = "F"),
+  "A7"  = c(G476 = "S"),
+  "A8"  = c(Y459 = "C"),
+  "A9"  = c(Y459 = "D"),
+  "A10" = c(D107 = "V"),
+  "A11" = c(Y461 = "H"),
+
+  # --- Double Mutations (B) ---
+  "B1"  = c(L50 = "S", Y137 = "F"),
+  "B2"  = c(V136 = "A", Y461 = "S"),
+  "B3"  = c(I381 = "V", Y459 = "D"),
+  "B4"  = c(I381 = "V", Y459 = "S"),
+  "B5"  = c(L50 = "S", Y459 = "D"),
+  "B6"  = c(L50 = "S", G460 = "D"),
+  "B7"  = c(L50 = "S", S188 = "N"),
+  "B8"  = c(L50 = "S", Y461 = "S"),
+  "B9"  = c(L50 = "S", Y461 = "H"),
+  "B10" = c(V136 = "C", Y461 = "H"),
+  "B11" = c(Y137 = "F", S524 = "T"),
+  "B12" = c(I381 = "V", Y461 = "H"),
+  "B13" = c(L50 = "S", Y459 = "C"),
+
+  # --- Triple Mutations (C) ---
+  "C1"  = c(I381 = "V", Y461 = "H", G510 = "C"),
+  "C2"  = c(L50 = "S", I381 = "V", Y459 = "S"),
+  "C3"  = c(L50 = "S", I381 = "V", Y459 = "C"),
+  "C4"  = c(L50 = "S", I381 = "V", Y459 = "D"),
+  "C5"  = c(L50 = "S", V136 = "C", Y461 = "S"),
+  "C6"  = c(L50 = "S", V136 = "A", Y461 = "S"),
+  "C7"  = c(L50 = "S", V136 = "A", Y461 = "H"),
+  "C8"  = c(L50 = "S", I381 = "V", Y461 = "H"),
+  "C9"  = c(L50 = "S", V136 = "A", Y461 = "N"),
+  "C10" = c(V136 = "A", Y459 = "Del", G460 = "Del"),
+  "C11" = c(V136 = "A", Y461 = "S", S524 = "T"),
+  "C12" = c(V136 = "A", I381 = "V", Y461 = "H"),
+  "C13" = c(V136 = "A", S188 = "N", Y459 = "C"),
+  "C14" = c(L50 = "S", G312 = "A", Y459 = "D"),
+  "C15" = c(L50 = "S", N178 = "S", S188 = "N"),
+  "C16" = c(D107 = "V", I381 = "V", Y461 = "H"),
+  "C17" = c(V136 = "C", I381 = "V", Y461 = "H"),
+  "C18" = c(L50 = "S", S188 = "N", N513 = "K"),
+  "C19" = c(L50 = "S", S188 = "N", G460 = "D"),
+  "C20" = c(L50 = "S", Y461 = "S", S524 = "T"),
+  "C21" = c(L50 = "S", V136 = "G", Y461 = "S"),
+
+  # --- Quadruple Mutations (D) ---
+  "D1"  = c(S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "D2"  = c(L50 = "S", S188 = "N", G460 = "D", N513 = "K"),
+  "D3"  = c(L50 = "S", S188 = "N", Y461 = "H", N513 = "K"),
+  "D4"  = c(L50 = "S", S188 = "N", Y459 = "Del", G460 = "Del"),
+  "D5"  = c(L50 = "S", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "D6"  = c(L50 = "S", D134 = "G", V136 = "G", Y461 = "S"),
+  "D7"  = c(L50 = "S", V136 = "A", Y461 = "S", S524 = "T"),
+  "D8"  = c(V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del"),
+  "D9"  = c(L50 = "S", D134 = "G", V136 = "A", Y461 = "H"),
+  "D10" = c(L50 = "S", V136 = "A", I381 = "V", Y461 = "H"),
+  "D11" = c(L50 = "S", V136 = "A", Y461 = "H", S524 = "T"),
+  "D12" = c(V136 = "A", I381 = "V", Y459 = "Del", G460 = "Del"),
+  "D13" = c(V136 = "C", I381 = "V", Y461 = "H", S524 = "T"),
+  "D14" = c(L50 = "S", V136 = "A", G460 = "Del", S524 = "T"),
+  "D15" = c(D134 = "G", V136 = "A", S188 = "N", Y461 = "L"),
+  "D16" = c(L50 = "S", I381 = "V", G460 = "Del", Y461 = "H"),
+  "D17" = c(D134 = "G", S188 = "N", Y459 = "Del", G460 = "Del"),
+  "D18" = c(D134 = "G", V136 = "A", I381 = "V", Y461 = "H"),
+  "D19" = c(D107 = "V", I381 = "V", N513 = "K", S524 = "T"),
+  "D20" = c(L50 = "S", G312 = "A", I381 = "V", Y461 = "H"),
+  "D21" = c(L50 = "S", S188 = "N", I381 = "V", Y461 = "H"),
+  "D22" = c(L50 = "S", G312 = "A", I381 = "V", Y459 = "D"),
+  "D23" = c(L50 = "S", S188 = "N", Y459 = "C", N513 = "K"),
+  "D24" = c(L50 = "S", A311 = "G", Y461 = "S", V490 = "L"),
+  "D25" = c(L50 = "S", I381 = "V", Y461 = "H", S524 = "T"),
+
+  # --- 5 Mutations (E) ---
+  "E1"  = c(L50 = "S", S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E2"  = c(L50 = "S", D134 = "G", V136 = "A", Y461 = "S", S524 = "T"),
+  "E3"  = c(L50 = "S", V136 = "A", I381 = "V", Y461 = "S", S524 = "T"),
+  "E4"  = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y461 = "H"),
+  "E5"  = c(L50 = "S", V136 = "A", I381 = "V", Y461 = "H", S524 = "T"),
+  "E6"  = c(L50 = "S", V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del"),
+  "E7"  = c(L50 = "S", V136 = "C", I381 = "V", Y461 = "H", S524 = "T"),
+  "E8"  = c(L50 = "S", V136 = "C", S188 = "N", I381 = "V", Y461 = "H"),
+  "E9"  = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y459 = "S"),
+  "E10" = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y461 = "S"),
+  "E11" = c(V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E12" = c(L50 = "S", S188 = "N", A379 = "G", Y459 = "Del", G460 = "Del"),
+  "E13" = c(L50 = "S", D134 = "G", V136 = "G", Y461 = "S", S524 = "T"),
+  "E14" = c(S188 = "N", Y459 = "Del", G460 = "Del", G510 = "C", N513 = "K"),
+  "E15" = c(L50 = "S", V136 = "A", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E16" = c(L50 = "S", V136 = "C", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E17" = c(L50 = "S", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E18" = c(L50 = "S", S188 = "N", I381 = "V", G460 = "Del", Y461 = "H"),
+  "E19" = c(L50 = "S", D107 = "V", I381 = "V", Y461 = "H", S524 = "T"),
+  "E20" = c(L50 = "S", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del"),
+  "E21" = c(D134 = "G", V136 = "A", S188 = "N", G460 = "Del", Y461 = "Del"),
+  "E22" = c(S188 = "N", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "E23" = c(V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del", S524 = "T"),
+
+  # --- 6 Mutations (F) ---
+  "F1"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", Y459 = "D", S524 = "T"),
+  "F2"  = c(L50 = "S", S188 = "N", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "F3"  = c(L50 = "S", V136 = "C", S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "F4"  = c(L50 = "S", V136 = "C", S188 = "N", I381 = "V", Y461 = "H", S524 = "T"),
+  "F5"  = c(L50 = "S", V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "F6"  = c(L50 = "S", V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "F7"  = c(L50 = "S", V136 = "A", A379 = "G", I381 = "V", Y461 = "S", S524 = "T"),
+  "F8"  = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y461 = "H", S524 = "T"),
+  "F9"  = c(V136 = "C", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "F10" = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y461 = "S", S524 = "T"),
+  "F11" = c(L50 = "S", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "F12" = c(L50 = "S", D134 = "G", V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del"),
+  "F13" = c(V136 = "C", S188 = "N", Y459 = "Del", G460 = "Del", G510 = "C", N513 = "K"),
+  "F14" = c(S188 = "N", I381 = "V", Y459 = "Del", G460 = "Del", Y461 = "G", N513 = "K"),
+  "F15" = c(L50 = "S", V136 = "A", S188 = "N", A379 = "G", Y459 = "Del", G460 = "Del"),
+  "F16" = c(S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+
+  # --- 7 Mutations (G) ---
+  "G1"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "G2"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "G3"  = c(L50 = "S", V136 = "A", S188 = "N", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T"),
+  "G4"  = c(L50 = "S", S188 = "N", S208 = "T", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del"),
+  "G5"  = c(L50 = "S", D134 = "G", V136 = "A", S208 = "T", I381 = "V", Y461 = "H", S524 = "T"),
+  "G6"  = c(L50 = "S", D134 = "G", V136 = "A", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "G7"  = c(L50 = "S", V136 = "A", S188 = "N", A379 = "G", I381 = "V", Y461 = "S", S524 = "T"),
+  "G8"  = c(S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", Y461 = "G", N513 = "K"),
+  "G9"  = c(L50 = "S", V136 = "A", S188 = "N", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "G10" = c(L50 = "S", D134 = "G", V136 = "A", A379 = "G", I381 = "V", Y461 = "S", S524 = "T"),
+
+  # --- 8 Mutations (H) ---
+  "H1"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", G412 = "A", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "H2"  = c(L50 = "S", S188 = "N", S208 = "T", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "H3"  = c(L50 = "S", S188 = "N", N284 = "H", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "H4"  = c(L50 = "S", V136 = "A", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "H5"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", A410 = "T", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "H6"  = c(L50 = "S", V136 = "C", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "H7"  = c(L50 = "S", D134 = "G", V136 = "A", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", S524 = "T"),
+  "H8"  = c(L50 = "S", S188 = "N", H303 = "Y", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K"),
+  "H9"  = c(L50 = "S", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T"),
+
+  # --- 9 Mutations (I) ---
+  "I1"  = c(L50 = "S", V136 = "A", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T"),
+  "I2"  = c(L50 = "S", D134 = "G", V136 = "A", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T"),
+  "I3"  = c(L50 = "S", V136 = "C", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T"),
+
+  # --- 10 Mutations (J) ---
+  "J01" = c(L50 = "S", D134 = "G", V136 = "A", S188 = "N", A379 = "G", I381 = "V", Y459 = "Del", G460 = "Del", N513 = "K", S524 = "T")
+)
+
+  full_map <- unlist(lapply(seq_along(CYP51_CDS), function(i) seq(end(CYP51_CDS[i]), start(CYP51_CDS[i]))))
+  target_names <- names(CYP51_target_positions)
+  gen_code <- Biostrings::getGeneticCode("1")
+  
+  db_dt <- rbindlist(lapply(names(CYP51_db), function(h) as.data.table(as.list(CYP51_db[[h]]))[, Haplotype := h]), fill = TRUE)
+  for (col in target_names) { if (!col %in% names(db_dt)) set(db_dt, j = col, value = "wt"); set(db_dt, i = which(is.na(db_dt[[col]])), j = col, value = "wt") }
+  setkeyv(db_dt, target_names)
+  
+  bam_files <- if(dir.exists(input_bam)) list.files(input_bam, pattern = "\\.bam$", full.names = TRUE) else input_bam
+  
+  final_results <- data.table()
+  
+  for(bam_file in bam_files) {
+    sample_name <- tools::file_path_sans_ext(basename(bam_file))
+    message("Analyzing sample: ", sample_name)
+    
+    aln <- readGAlignments(bam_file, param = ScanBamParam(what = c("seq", "cigar", "pos"), which = GRanges("CYP51", IRanges(1, 1907))))
+    
+    if ("cigarillo" %in% loadedNamespaces() || requireNamespace("cigarillo", quietly = TRUE)) {
+      seqs_aligned <- cigarillo::project_sequences(mcols(aln)$seq, cigar(aln), from = "query", to = "reference", D.letter = "-", N.letter = "N")
+    } else {
+      seqs_aligned <- sequenceLayer(mcols(aln)$seq, cigar(aln), from = "query", to = "reference", D.letter = "-", N.letter = "N")
+    }
+    
+    res_dt <- data.table(read_id = names(aln))
+    seq_widths <- width(seqs_aligned)
+    read_starts <- start(aln)
+    
+    for (m_name in target_names) {
+      pos <- CYP51_target_positions[[m_name]]
+      idx_glob <- full_map[c((pos*3)-2, (pos*3)-1, (pos*3))]
+      l1 <- idx_glob[1] - read_starts + 1; l2 <- idx_glob[2] - read_starts + 1; l3 <- idx_glob[3] - read_starts + 1
+      in_range <- (l1 >= 1 & l2 >= 1 & l3 >= 1 & l1 <= seq_widths & l2 <= seq_widths & l3 <= seq_widths)
+      
+      res_vec <- rep("OUT", length(aln))
+      valid_idx <- which(in_range)
+      if (length(valid_idx) > 0) {
+        c1 <- subseq(seqs_aligned[valid_idx], l1[valid_idx], l1[valid_idx])
+        c2 <- subseq(seqs_aligned[valid_idx], l2[valid_idx], l2[valid_idx])
+        c3 <- subseq(seqs_aligned[valid_idx], l3[valid_idx], l3[valid_idx])
+        codons <- paste0(c1, c2, c3)
+        is_del <- grepl("-", codons)
+        res_vec[valid_idx[is_del]] <- "Del"
+        if (any(!is_del)) {
+          idx_non_del <- valid_idx[!is_del]
+          codon_dnas <- complement(DNAStringSet(codons[!is_del]))
+          aas <- as.character(translate(codon_dnas, genetic.code = gen_code, if.fuzzy.codon = "solve", no.init.codon = TRUE))
+          res_vec[idx_non_del] <- ifelse(aas == substr(m_name, 1, 1), "wt", aas)
+        }
+      }
+      res_dt[, (m_name) := res_vec]
+    }
+    
+    setkeyv(res_dt, target_names)
+    res_dt[db_dt, Haplotype := i.Haplotype, on = target_names]
+    res_dt[is.na(Haplotype), Haplotype := "Unknown"]
+    
+    sample_summary <- res_dt[, .(N = .N), by = Haplotype]
+    sample_summary[, sample := sample_name]
+    final_results <- rbind(final_results, sample_summary)
+  }
+  
+  return(final_results[, .(sample, Haplotype, N)])
+}
