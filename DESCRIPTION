@@ -1,18 +1,25 @@
 Package: ZymoR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Rapid Identification of Cyp51 Haplotypes and Fungicide Resistance Markers
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Matesz", "Mazdziarz",
+      "Mateusz", "Mazdziarz",
       email = "mateusz.mazdziarz@uwm.edu.pl",
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+Description: ZymoR is a package for rapid identification of Cyp51 haplotypes in 
+    Zymoseptoria tritici. The package also detects mutations in CYTB and SDH genes 
+    associated with fungicide resistance, as well as insertions in the promoter 
+    regions of CYP51 and MFS1.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    data.table
+    data.table,
+    Biostrings,
+    IRanges,
+    Rsamtools,
+    GenomicAlignments,
+    pwalign
