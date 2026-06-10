@@ -28,7 +28,7 @@
 
 get_CYP51_amplicon <- function(input_bam) {
 
-data.table::setDTthreads(0)
+`.` <- list
 
 CYP51_CDS <- IRanges::IRanges(start = c(1461, 1010, 886, 1), end = c(1907, 1403, 904, 775))
 
