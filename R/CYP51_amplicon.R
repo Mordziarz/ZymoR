@@ -275,7 +275,8 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
 
     #final_results <- rbind(final_results, sample_summary)
 
-    res_dt[, is_incomplete := rowSums(as.matrix(.SD) == "OUT", na.rm = TRUE) > 0, .SDcols = target_names]
+   is_incomplete <- apply(res_dt[, ..target_names], 1, function(x) any(x == "OUT"))
+    res_dt[, is_incomplete := is_incomplete]
     
     res_dt[is_incomplete == TRUE, (target_names) := "OUT"]
     
@@ -287,8 +288,10 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
     
     res_dt[, Status := "KNOWN"]
     res_dt[Haplotype == "Unknown", Status := "NEW"]
-    res_dt[rowSums(.SD == "OUT", na.rm = TRUE) > 0, Status := "Cant classify", .SDcols = target_names]
-
+    
+    res_dt[is_incomplete == TRUE, Status := "Cant classify"]
+    
+    res_dt[, is_incomplete := NULL]
     sample_summary <- res_dt[, .(N = .N), by = c("Haplotype", "Status", target_names)]
     sample_summary[, Sample_ID := sample_name]
     
