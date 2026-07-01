@@ -252,6 +252,14 @@ print(results)
 write.csv2(results,"get_CYTB_amplicon.csv")
 ```
 
+| Sample_ID | Status | N | F129L | Y132C | G143A |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| barcode26 | KNOWN | 41381 | wt | wt | A |
+| barcode50 | KNOWN | 25794 | wt | wt | A |
+| barcode74 | KNOWN | 24207 | wt | wt | A |
+| barcode82 | KNOWN | 23503 | wt | wt | A |
+| barcode90 | KNOWN | 22816 | wt | wt | A |
+
 ### SDHB
 
 ```R
@@ -261,6 +269,14 @@ print(results)
 
 write.csv2(results,"get_SDHB_amplicon.csv")
 ```
+
+| Sample_ID | Status | N | N225I/T | H267Y/R/L | T268I | I269V/T |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| barcode27 | KNOWN | 10867 | wt | wt | wt | wt |
+| barcode67 | KNOWN | 7178 | wt | wt | wt | wt |
+| barcode35 | KNOWN | 6687 | wt | wt | wt | wt |
+| barcode43 | KNOWN | 6022 | wt | wt | wt | wt |
+| barcode91 | KNOWN | 5518 | wt | wt | wt | wt |
 
 ### SDHC
 
@@ -272,6 +288,15 @@ print(results)
 write.csv2(results,"get_SDHC_amplicon.csv")
 ```
 
+| Sample_ID | Status | N | T79N | W80S | N86S | H152R | V166M |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| barcode28 | KNOWN | 8065 | wt | wt | wt | wt | wt |
+| barcode55 | KNOWN | 7202 | wt | wt | wt | wt | wt |
+| barcode28 | KNOWN | 6334 | wt | wt | S | wt | wt |
+| barcode44 | KNOWN | 4186 | wt | wt | wt | wt | wt |
+| barcode60 | KNOWN | 3824 | wt | wt | wt | wt | wt |
+
+
 ### SDHD
 
 
@@ -282,3 +307,11 @@ print(results)
 
 write.csv2(results,"get_SDHD_amplicon.csv")
 ```
+
+| Sample_ID | Status | N | R47W | I50L |
+| :--- | :--- | :--- | :--- | :--- |
+| barcode37 | KNOWN | 16044 | wt | wt |
+| barcode45 | KNOWN | 11047 | wt | wt |
+| barcode29 | KNOWN | 10305 | wt | wt |
+| barcode53 | KNOWN | 8651 | wt | wt |
+| barcode61 | KNOWN | 7625 | wt | wt |
