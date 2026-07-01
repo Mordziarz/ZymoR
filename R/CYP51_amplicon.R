@@ -260,21 +260,38 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
       set(res_dt, j = m_name, value = res_vec)
     }
     
-    setkeyv(res_dt, target_names)
+    #setkeyv(res_dt, target_names)
     #res_dt[db_dt, Haplotype := i.Haplotype, on = target_names]
     #res_dt[is.na(Haplotype), Haplotype := "Unknown"]
     
     #sample_summary <- res_dt[, .(N = .N), by = Haplotype]
     #sample_summary[, sample := sample_name]
 
+    #res_dt <- merge(res_dt, db_dt, by = target_names, all.x = TRUE)
+    #set(res_dt, i = which(is.na(res_dt$Haplotype)), j = "Haplotype", value = "Unknown")
+
+    #sample_summary <- res_dt[, .(N = .N), by = Haplotype]
+    #set(sample_summary, j = "sample", value = sample_name)
+
+    #final_results <- rbind(final_results, sample_summary)
+
+    setkeyv(res_dt, target_names)
+    setkeyv(db_dt, target_names)
     res_dt <- merge(res_dt, db_dt, by = target_names, all.x = TRUE)
-    set(res_dt, i = which(is.na(res_dt$Haplotype)), j = "Haplotype", value = "Unknown")
-
-    sample_summary <- res_dt[, .(N = .N), by = Haplotype]
-    set(sample_summary, j = "sample", value = sample_name)
-
+    
+    res_dt[is.na(Haplotype), Haplotype := "Unknown"]
+    res_dt[, Status := ifelse(Haplotype == "Unknown", "NEW", "KNOWN")]
+    
+    sample_summary <- res_dt[, .(N = .N), by = c("Haplotype", "Status", target_names)]
+    
+    sample_summary[, Sample_ID := sample_name]
+    
+    setcolorder(sample_summary, c("Sample_ID", "Haplotype", "N", "Status", target_names))
+    
     final_results <- rbind(final_results, sample_summary)
+
   }
   
-  return(final_results[, .(sample, Haplotype, N)])
+  #return(final_results[, .(sample, Haplotype, N)])
+  return(final_results)
 }
