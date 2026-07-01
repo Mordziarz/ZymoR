@@ -203,8 +203,6 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
   target_names <- names(CYP51_target_positions)
   gen_code <- Biostrings::getGeneticCode("1")
   
-  #db_dt <- rbindlist(lapply(names(CYP51_db), function(h) as.data.table(as.list(CYP51_db[[h]]))[, Haplotype := h]), fill = TRUE)
-  
   db_list <- lapply(names(CYP51_db), function(h) {
   dt <- as.data.table(as.list(CYP51_db[[h]]))
   set(dt, j = "Haplotype", value = h)
@@ -256,24 +254,8 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
           res_vec[idx_non_del] <- ifelse(aas == substr(m_name, 1, 1), "wt", aas)
         }
       }
-      #res_dt[, (m_name) := res_vec]
       set(res_dt, j = m_name, value = res_vec)
     }
-    
-    #setkeyv(res_dt, target_names)
-    #res_dt[db_dt, Haplotype := i.Haplotype, on = target_names]
-    #res_dt[is.na(Haplotype), Haplotype := "Unknown"]
-    
-    #sample_summary <- res_dt[, .(N = .N), by = Haplotype]
-    #sample_summary[, sample := sample_name]
-
-    #res_dt <- merge(res_dt, db_dt, by = target_names, all.x = TRUE)
-    #set(res_dt, i = which(is.na(res_dt$Haplotype)), j = "Haplotype", value = "Unknown")
-
-    #sample_summary <- res_dt[, .(N = .N), by = Haplotype]
-    #set(sample_summary, j = "sample", value = sample_name)
-
-    #final_results <- rbind(final_results, sample_summary)
 
    is_incomplete <- apply(res_dt[, ..target_names], 1, function(x) any(x == "OUT"))
     res_dt[, is_incomplete := is_incomplete]
@@ -300,6 +282,5 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
 
   }
   
-  #return(final_results[, .(sample, Haplotype, N)])
   return(final_results)
 }
