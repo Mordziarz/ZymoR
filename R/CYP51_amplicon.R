@@ -276,22 +276,23 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
     #final_results <- rbind(final_results, sample_summary)
 
     res_dt[, is_incomplete := rowSums(.SD == "OUT", na.rm = TRUE) > 0, .SDcols = target_names]
+    
     res_dt[is_incomplete == TRUE, (target_names) := "OUT"]
-    res_dt[, is_incomplete := NULL]
     
     setkeyv(res_dt, target_names)
     setkeyv(db_dt, target_names)
     res_dt <- merge(res_dt, db_dt, by = target_names, all.x = TRUE)
     
     res_dt[is.na(Haplotype), Haplotype := "Unknown"]
-    res_dt[, Status := ifelse(Haplotype == "Unknown", "NEW", "KNOWN")]
     
+    res_dt[, Status := "KNOWN"]
+    res_dt[Haplotype == "Unknown", Status := "NEW"]
+    res_dt[rowSums(.SD == "OUT", na.rm = TRUE) > 0, Status := "Cant classify", .SDcols = target_names]
+
     sample_summary <- res_dt[, .(N = .N), by = c("Haplotype", "Status", target_names)]
-    
     sample_summary[, Sample_ID := sample_name]
     
     setcolorder(sample_summary, c("Sample_ID", "Haplotype", "N", "Status", target_names))
-    
     final_results <- rbind(final_results, sample_summary)
 
   }
