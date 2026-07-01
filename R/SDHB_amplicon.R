@@ -140,6 +140,9 @@ get_SDHB_amplicon <- function(input_bam) {
     
     sample_summary <- res_dt[, .(N = .N), by = c("Status", target_names)]
     sample_summary[, Sample_ID := sample_name]
+
+    setcolorder(sample_summary, c("Sample_ID", "Status", "N", target_names))
+
     final_results <- rbind(final_results, sample_summary)
   }
   return(final_results)
