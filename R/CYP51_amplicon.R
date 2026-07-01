@@ -275,7 +275,7 @@ CYP51_target_positions <- c(L50=50, D107=107, D134=134, V136=136, Y137=137, N178
 
     #final_results <- rbind(final_results, sample_summary)
 
-    res_dt[, is_incomplete := rowSums(.SD == "OUT", na.rm = TRUE) > 0, .SDcols = target_names]
+    res_dt[, is_incomplete := rowSums(as.matrix(.SD) == "OUT", na.rm = TRUE) > 0, .SDcols = target_names]
     
     res_dt[is_incomplete == TRUE, (target_names) := "OUT"]
     
