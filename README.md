@@ -41,7 +41,6 @@ library(IRanges)
 library(pwalign)
 library(Rsamtools)
 library(GenomicAlignments)
-library(Biostrings)
 library(data.table)
 ```
 # Identification from genome assembly
