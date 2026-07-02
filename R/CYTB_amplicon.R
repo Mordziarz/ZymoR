@@ -37,7 +37,7 @@ get_CYTB_amplicon <- function(input_bam) {
   CYTB_target_positions <- c(F129L=24, Y132C=27, G143A=38)
   
   full_map <- unlist(lapply(seq_along(CYTB_CDS), function(i) seq(end(CYTB_CDS[i]), start(CYTB_CDS[i]))))
-  gen_code <- Biostrings::getGeneticCode("1")
+  gen_code <- Biostrings::getGeneticCode("4")
   target_names <- names(CYTB_target_positions)
   
   bam_files <- if(dir.exists(input_bam)) list.files(input_bam, pattern = "\\.bam$", full.names = TRUE) else input_bam

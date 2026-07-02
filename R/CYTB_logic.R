@@ -182,7 +182,7 @@ F129L=24,Y132C=27,G143A=38
     
     amino <- as.character(Biostrings::translate( 
       codon_dna,  
-      genetic.code = Biostrings::getGeneticCode("1"),  
+      genetic.code = Biostrings::getGeneticCode("4"),  
       if.fuzzy.codon = "solve", 
       no.init.codon = TRUE 
     )) 
