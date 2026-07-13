@@ -23,7 +23,7 @@ analyze_genome <- function(genome_path,
                            max_mismatch = 3,
                            max_amplicon_length = 5000,
                            min_amplicon_length = 100,
-                           all = T,
+                           all = F,
                            min_contig_length = 1000) {
   
   cat("=== GENOME ANALYSIS ===\n")
