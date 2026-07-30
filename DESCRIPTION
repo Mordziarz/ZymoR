@@ -1,7 +1,7 @@
 Package: ZymoR
 Type: Package
 Title: Rapid Identification of Cyp51 Haplotypes and Fungicide Resistance Markers
-Version: 0.1.0
+Version: 1.0
 Authors@R: c(
     person(
       "Mateusz", "Mazdziarz",
