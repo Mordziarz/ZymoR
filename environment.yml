@@ -1,0 +1,19 @@
+name: zymor-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.5.2
+  - r-devtools
+  - r-remotes
+  - r-data.table=1.18.4
+  - bioconductor-biostrings=2.78.0
+  - bioconductor-iranges=2.44.0
+  - bioconductor-pwalign=1.6.0
+  - bioconductor-rsamtools=2.26.0
+  - bioconductor-genomicalignments=1.46.0
+  - fastp=0.23.4
+  - spades=3.13.1
+  - minimap2
+  - samtools
