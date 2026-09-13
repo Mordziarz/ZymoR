@@ -73,7 +73,6 @@ get_CYP51_res <- ZymoR::get_CYP51(input_path="path_to_your_folder_or_fasta", out
 
 | Parameter / Flag | Type | Default Value | Description |
 | :--- | :--- | :--- | :--- |
-| `genome_path` | `character` | *Required* | Path to the FASTA file containing genome sequences or contigs (`analyze_genome`). |
 | `max_mismatch` | `integer` | `3` | Maximum allowed mismatches for primer binding. |
 | `max_amplicon_length` | `integer` | `5000` | Maximum allowed length of generated amplicons (in bp). |
 | `min_amplicon_length` | `integer` | `100` | Minimum allowed length of generated amplicons (in bp). |
