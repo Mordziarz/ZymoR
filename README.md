@@ -47,6 +47,8 @@ library(data.table)
 ```
 ## Conda or Mamba installation
 
+This environment will also include fastp, SPAdes, minimap2, and samtools, allowing a faster transition from FASTQ sequences to mutation profiling.
+
 To set up the environment required for ZymoR, you can use either Mamba or Conda. I strongly recommend Mamba for faster dependency resolution:
 
 ```bash
