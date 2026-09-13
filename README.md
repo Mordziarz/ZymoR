@@ -70,6 +70,18 @@ get_CYP51_res <- ZymoR::get_CYP51(input_path="path_to_your_folder_or_fasta", out
 ```
 
 # Identification from genome assembly
+
+| Parameter / Flag | Type | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `genome_path` | `character` | *Required* | Path to the FASTA file containing genome sequences or contigs (`analyze_genome`). |
+| `max_mismatch` | `integer` | `3` | Maximum allowed mismatches for primer binding. |
+| `max_amplicon_length` | `integer` | `5000` | Maximum allowed length of generated amplicons (in bp). |
+| `min_amplicon_length` | `integer` | `100` | Minimum allowed length of generated amplicons (in bp). |
+| `all` | `logical` | `FALSE` | Determines whether to search all contigs (`TRUE`) or stop after finding the first match (`FALSE`). |
+| `min_contig_length` | `integer` | `1000` | Minimum contig length required to be considered for analysis. |
+| `input_path` | `character` | *Required* | Path to a single sequence file (`.fasta`, `.fna`, `.txt`) or a directory containing sequence files for the pipeline. |
+| `output_dir` | `character` | `"zymor_results"` | Destination directory where output tables (`.csv`), FASTA files, and missing amplicon reports are saved. |
+
 ## CYP51
 
 CYP51 haplotypes in Zymoseptoria tritici (based on Huf et. al., 2018 and Gaab et al., 2024).
