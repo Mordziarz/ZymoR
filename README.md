@@ -45,6 +45,30 @@ library(Rsamtools)
 library(GenomicAlignments)
 library(data.table)
 ```
+## Conda or Mamba installation
+
+To set up the environment required for ZymoR, you can use either Mamba or Conda. I strongly recommend Mamba for faster dependency resolution:
+
+```bash
+mamba env create -f environment.yml
+mamba activate zymor-env
+
+conda env create -f environment.yml
+conda activate zymor-env
+```
+Next, install the ZymoR package from GitHub and its remote dependencies within the active environment:
+
+```bash
+Rscript -e 'remotes::install_github("Mordziarz/ZymoR")'
+```
+Execute the pipeline function to analyze target datasets:
+
+```bash
+Rscript -e 'library(Biostrings); library(IRanges); library(pwalign); library(Rsamtools); library(GenomicAlignments); library(data.table); library(ZymoR);
+
+get_CYP51_res <- ZymoR::get_CYP51(input_path="/dane/Septorie", output_dir="your_output_folder_name"); print(get_CYP51_res)'
+```
+
 # Identification from genome assembly
 ## CYP51
 
