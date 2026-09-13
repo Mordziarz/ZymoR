@@ -56,7 +56,7 @@ mamba activate zymor-env
 conda env create -f environment.yml
 conda activate zymor-env
 ```
-Next, install the ZymoR package from GitHub and its remote dependencies within the active environment:
+Next, install the ZymoR package from GitHub:
 
 ```bash
 Rscript -e 'remotes::install_github("Mordziarz/ZymoR")'
