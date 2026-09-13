@@ -66,7 +66,7 @@ Execute the pipeline function to analyze target datasets:
 ```bash
 Rscript -e 'library(Biostrings); library(IRanges); library(pwalign); library(Rsamtools); library(GenomicAlignments); library(data.table); library(ZymoR);
 
-get_CYP51_res <- ZymoR::get_CYP51(input_path="/dane/Septorie", output_dir="your_output_folder_name"); print(get_CYP51_res)'
+get_CYP51_res <- ZymoR::get_CYP51(input_path="path_to_your_folder_or_fasta", output_dir="your_output_folder_name"); print(get_CYP51_res)'
 ```
 
 # Identification from genome assembly
