@@ -316,3 +316,6 @@ write.csv2(results,"get_SDHD_amplicon.csv")
 | barcode29 | KNOWN | 10305 | wt | wt |
 | barcode53 | KNOWN | 8651 | wt | wt |
 | barcode61 | KNOWN | 7625 | wt | wt |
+
+# Funding
+The study was financially supported by The National Science Center Kraków, Poland: Grant No. 2023/05/Y/NZ9/00163.
