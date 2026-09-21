@@ -374,3 +374,7 @@ write.csv2(results,"get_SDHD_amplicon.csv")
 
 # Funding
 This work was financially supported by The National Science Center Kraków, Poland: Grant No. 2023/05/Y/NZ9/00163.
+
+# Citation
+When utilizing ZymoR, kindly cite:
+Maździarz, M., Bilska, K., Krawczyk, K. et al. ZymoR: Bridging plant pathology and automated bioinformatics for fungicide resistance profiling in Zymoseptoria tritici. World J Microbiol Biotechnol 42, 549 (2026). https://doi.org/10.1007/s11274-026-05287-0
