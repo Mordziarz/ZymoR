@@ -153,11 +153,19 @@ get_MFS1 <- function(input_path, output_dir = "zymor_results", ...) {
 `%||%` <- function(x, y) if (length(x) == 0) y else x
 
 analyze_indels <- function(amp_seq, ref_seq) {
-  
+  sub_mat <- pwalign::nucleotideSubstitutionMatrix(
+    match = 2,
+    mismatch = -5,
+    baseOnly = TRUE
+  )
+
   aln <- pwalign::pairwiseAlignment(
     pattern = amp_seq,
     subject = ref_seq,
-    type = "global"
+    type = "global",
+    substitutionMatrix = sub_mat,
+    gapOpening = 12,
+    gapExtension = 1
   )
   
   indel_info <- pwalign::indel(aln)
