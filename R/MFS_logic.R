@@ -173,8 +173,8 @@ analyze_indels <- function(amp_seq, ref_seq) {
     
     result <- character(length(w))
     result[w >= 480 & w <= 550] <- "Type_I"
-    result[w >= 164 & w <= 370] <- "Type_II"
-    result[abs(w - 149) < 15] <- "Type_III"
+    result[w >= 150 & w <= 369] <- "Type_II"
+    result[abs(w - 149) < 2] <- "Type_III"
     
     other_idx <- result == "" & w > 20
     result[other_idx] <- "Rare_Or_Indel"
